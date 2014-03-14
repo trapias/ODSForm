@@ -199,6 +199,15 @@ Namespace ODS.DNN.Modules.Form
                     If Settings("txtResetText-" & cultureCode) <> "" Then
                         aReset.Text = Settings("txtResetText-" & cultureCode)
                     End If
+				Else
+                    'localization not enabled
+                    If Settings("txtSubmitText-") <> "" Then
+                        aSubmit.Text = Settings("txtSubmitText-")
+                    End If
+
+                    If Settings("txtResetText-") <> "" Then
+                        aReset.Text = Settings("txtResetText-")
+                    End If
                 End If
 
                 'aSubmit.OnClientClick = "checkhash();"
