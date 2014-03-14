@@ -1,0 +1,176 @@
+/* ================================
+    CSS STYLES FOR ODS Form
+   ================================
+*/
+
+.EditButtons
+{
+    width:100%;
+    padding: 5px;
+    margin: 5px;
+}
+
+/* Label style */
+.FormLabel{text-decoration:underline; color: #888; padding:4px;}
+
+/* Messages */
+.FormSubmitted{font-weight:bold; font-size: 16px;}
+.FormError{color:Red; font-size: 13px; display:block;}
+
+/* Form table */
+.FormTable{width:500px}
+.FormLabelCell{vertical-align:top; width:150px}
+.FormControlCell{padding:4px; overflow:visible;}
+
+/* Controls */
+.FormCheckbox{}
+.FormMultipleSelect{}
+.FormDropDownList{}
+.FormLabelControl{}
+.FormTextArea{}
+.FormTextBox{}
+.FormSubmit{}
+.FormRadioButtonList{}
+.FormFileUpload{}
+.divSubmitButtons{}
+.ValidationSummary {padding:10px;border:solid 4px #ccc; background-color:#eee; color:Black;}
+.ValidationSummary ul li{color:Black;}
+
+.dnnFormValidationSummary ul li{list-style-type:none;}
+
+/*
+    Custom CSS classes for fields (sample)
+*/
+.BlackWhite{background-color:Black; color:White;}
+
+/*  
+    orange buttons 
+    specify 'button' as CSS class
+*/
+a.button {
+	float:left;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	background: url("/images/button_left.png") no-repeat left top;
+	margin:2px;
+	padding:0 0 0 5px;
+	text-decoration:none;
+	height: 20px;
+	line-height:18px;
+}
+a.button span {
+    font-size: 14px;
+	float:left;
+	display:block;
+	color:#FFF;
+	background:url("/images/button_right.png") no-repeat right top;
+	padding:1px 5px 1px 0px; /*IE5*/
+	voice-family:"\"}\"";
+	voice-family:inherit;
+	padding:1px 5px 1px 0px;\ /*IE8*/
+	padding:3px 5px 2px 0px; /*Mozilla*/
+	[padding:3px 5px 2px 0px; /*Mozilla*/
+	padding:1px 5px 1px 0px;] /*Chrome e Safari*/
+}
+/*end*/
+/*\*/
+html*a.button span {
+[padding:3px 5px 2px 0px; /*old Mozilla*/
+padding:1px 5px 1px 0px; /* old Chrome e Safari*/
+]padding:1px 5px 1px 0px; /*IE7*/
+}/*end*/
+.dummyend[id]{clear:both;}
+
+/*\*/
+* html a.button span {
+padding:1px 5px 1px 0px; /*IE6*/
+}
+/*end*/
+
+a.button:hover span {
+  color:#FFF;
+  }
+a.button:hover {
+  background-position:0% -20px;
+  }
+a.button:hover span {
+  background-position:100% -20px;
+  }
+  
+/*  orange buttons  end*/
+
+
+/* 
+    Default buttons CSS
+*/
+.FormButton, .FormButton:visited {
+	background: #222 url(images/overlay.png) repeat-x; 
+	display: inline-block; 
+	padding: 5px 10px 6px; 
+	color: #fff; 
+	text-decoration: none;
+	-moz-border-radius: 6px; 
+	-webkit-border-radius: 6px;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	position: relative;
+	/* cursor: pointer; */
+}
+
+.FormButton:hover							{ background-color: #111; color: #fff; }
+.FormButton:active							{ top: 1px; }
+.small.FormButton, .small.FormButton:visited 			{ font-size: 11px}
+.FormButton, .FormButton:visited,
+.medium.FormButton, .medium.FormButton:visited 		{ font-size: 14px; 
+											  font-weight: bold; 
+											  line-height: 1; 
+											  text-shadow: 0 -1px 1px rgba(0,0,0,0.25); 
+											  width:150px;
+											  }
+.large.FormButton, .large.FormButton:visited 			{ font-size: 14px; 
+												  padding: 8px 14px 9px; }
+
+.super.FormButton, .super.FormButton:visited 			{ font-size: 34px; 
+												  padding: 8px 14px 9px; }
+.red.FormButton, .red.FormButton:visited			{ background-color: #e62727; }
+.red.FormButton:hover							{ background-color: #cf2525; }
+.orange.FormButton, .orange.FormButton:visited		{ background-color: #ff5c00; color: #fff;}
+.orange.FormButton:hover						{ background-color: #d45500; color: #fff;}
+.blue.FormButton, .blue.FormButton:visited		    { background-color: #2981e4; }
+.blue.FormButton:hover							{ background-color: #2575cf; }
+.yellow.FormButton, .yellow.FormButton:visited		{ background-color: #ffb515; }
+.yellow.FormButton:hover						{ background-color: #fc9200; }
+
+
+/*
+    Scalable css buttons
+    http://monc.se/kitchen/59/scalable-css-buttons-using-png-and-background-colors
+    Demo: http://monc.se/kitchen/stew/buttons/btn.html
+    not using its js
+    todo: fix
+    specify 'btn color' as CSS class, e.g. 'btn blue'
+*/
+.btn { display: block; position: relative; background: #aaa; padding: 5px; float: left; color: #fff !important; text-decoration: none; cursor: pointer; }
+.btn * { font-style: normal; background-image: url(images/btn2.png); background-repeat: no-repeat; display: block; position: relative; }
+.btn i { background-position: top left; position: absolute; margin-bottom: -5px;  top: 0; left: 0; width: 5px; height: 5px; }
+.btn span { background-position: bottom left; left: -5px; padding: 0 0 5px 10px; margin-bottom: -5px; }
+.btn span i { background-position: bottom right; margin-bottom: 0; position: absolute; left: 100%; width: 10px; height: 100%; top: 0; }
+.btn span span { background-position: top right; position: absolute; right: -10px; margin-left: 10px; top: -5px; height: 0; }
+ 
+* html .btn span,
+* html .btn i { float: left; width: auto; background-image: none; cursor: pointer; }
+ 
+.btn.blue { background: #2ae; }
+.btn.green { background: #9d4; }
+.btn.pink { background: #e1a; }
+.btn:hover { background-color: #a00; }
+.btn:active { background-color: #444; }
+.btn[class] {  background-image: url(images/shade.png); background-position: bottom; }
+ 
+* html .btn { border: 3px double #aaa; }
+* html .btn.blue { border-color: #2ae; }
+* html .btn.green { border-color: #9d4; }
+* html .btn.pink { border-color: #e1a; }
+* html .btn:hover { border-color: #a00; }

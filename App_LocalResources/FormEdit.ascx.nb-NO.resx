@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="ResMimeType">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="Version">
+		<value>1.0.0.0</value>
+	</resheader>
+	<resheader name="Reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.3300.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="Writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.3300.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="plFormValues.Text">
+		<value>Verdi(er)</value>
+	</data>
+	<data name="plSelectedValues.Text">
+		<value>Valgte verdi(er)</value>
+	</data>
+	<data name="plFormLabel.Text">
+		<value>Feltnavn</value>
+	</data>
+	<data name="plFormType.Text">
+		<value>Type</value>
+	</data>
+	<data name="HelpCheckbox.Text">
+		<value>&lt;b&gt;Helpetekst:&lt;/b&gt;&lt;br&gt;Legg til et feltnavn. Skriv "True" eller "False" i verdifeltet for å velge om boksen av avkrysset eller ikke. </value>
+	</data>
+	<data name="HelpDropDownList.Text">
+		<value>&lt;b&gt;Helpetekst:&lt;/b&gt;&lt;br&gt;Legg til et feltnavn. Skriv inn verdier i verdifeltet separert med semikolon (;). </value>
+	</data>
+	<data name="HelpLabel.Text">
+		<value>&lt;b&gt;Helpetekst:&lt;/b&gt;&lt;br&gt;Dette er bare et tekstfelt. Skriv inn teksten i verdifeltet.</value>
+	</data>
+	<data name="HelpMultipleSelect.Text">
+		<value>&lt;b&gt;Helpetekst:&lt;/b&gt;&lt;br&gt;Legg til et feltnavn. Skriv inn verdier i verdifeltet separert med semikolon(;). Skriv inn valgte verdier separert med semikolon(;)</value>
+	</data>
+	<data name="HelpTextArea.Text">
+		<value>&lt;b&gt;Helpetekst:&lt;/b&gt;&lt;br&gt;Legg til et feltnavn. Skriv inn startverdi i verdifeltet.</value>
+	</data>
+	<data name="HelpTextBox.Text">
+		<value>&lt;b&gt;Helpetekst:&lt;/b&gt;&lt;br&gt;Legg til et feltnavn. Skriv inn startverdi i verdifeltet.</value>
+	</data>
+	<data name="cmdDelete.Text">
+		<value>Slett</value>
+	</data>
+	<data name="cmdUpdate.Text">
+		<value>Lagre</value>
+	</data>
+	<data name="cmdCancel.Text">
+		<value>Avbryt</value>
+	</data>
+	<data name="cmdUp.Text">
+		<value>Flytt opp</value>
+	</data>
+	<data name="cmdDown.Text">
+		<value>Flytt ned</value>
+	</data>
+	<data name="DeleteItem.Text">
+		<value>Slette dette feltet?</value>
+	</data>
+	<data name="plRequired.Text">
+		<value>Obligatorisk</value>
+	</data>
+	<data name="HelpRadioButtonList.Text">
+		<value>&lt;b&gt;Help text:&lt;/b&gt;&lt;br&gt;Enter a label. In the Value(s) field enter multiple items separated by ";". In the Selected  value(s) field enter one of the items. &lt;p&gt;Example values field: cat;dog;cow;boy&lt;br&gt;Example selected value: cow</value>
+	</data>
+</root>

@@ -1,0 +1,139 @@
+﻿-- custom css class for any form field
+ALTER TABLE dbo.ODSFormItem ADD
+	CSSClass varchar(255) NULL
+GO
+
+
+
+ALTER PROCEDURE [dbo].[ODSFormItemAdd]
+	@ModuleID int,
+	@PortalID int,
+	@FormType int,
+	@FormValue varchar(8000),
+	@FormSelectedValue varchar(8000),
+	@FormLabel varchar(100),
+	@SortValue int,
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass varchar(255)
+AS
+	SELECT @SortValue=Min(SortValue)-1 FROM ODSFormItem
+
+	IF @SortValue Is Null 
+		Select @SortValue=1
+
+INSERT INTO ODSFormItem (
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass]
+) VALUES (
+	@ModuleID,
+	@PortalID,
+	@FormType,
+	@FormValue,
+	@FormSelectedValue,
+	@FormLabel,
+	@SortValue,
+	@Optional,
+	@Width,
+	@Height,
+	@CSSClass
+)
+
+select SCOPE_IDENTITY()
+
+GO
+
+
+
+ALTER PROCEDURE [dbo].[ODSFormItemGet]
+	@FormItemID int
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass]
+FROM ODSFormItem
+WHERE
+	[FormItemID] = @FormItemID
+
+GO
+
+
+ALTER PROCEDURE [dbo].[ODSFormItemList]
+	@portalID int,
+	@moduleID int
+	
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass]
+FROM ODSFormItem
+WHERE ModuleID=@ModuleID AND PortalID=@PortalID
+ORDER BY SortValue DESC
+
+GO
+
+
+
+
+ALTER PROCEDURE [dbo].[ODSFormItemUpdate]
+	@FormItemID int, 
+	@ModuleID int, 
+	@PortalID int, 
+	@FormType int, 
+	@FormValue varchar(8000), 
+	@FormSelectedValue varchar(8000), 
+	@FormLabel varchar(100),
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass varchar(255)
+AS
+
+UPDATE ODSFormItem SET
+	[ModuleID] = @ModuleID,
+	[PortalID] = @PortalID,
+	[FormType] = @FormType,
+	[FormValue] = @FormValue,
+	[FormSelectedValue] = @FormSelectedValue,
+	[FormLabel] = @FormLabel,
+	[Optional] = @Optional,
+	[Width] = @Width,
+	[Height] = @Height,
+	[CSSClass] = @CSSClass
+WHERE
+	[FormItemID] = @FormItemID
+
+GO
+

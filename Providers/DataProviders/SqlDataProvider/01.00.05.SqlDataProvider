@@ -1,0 +1,978 @@
+﻿/* 
+ ============= ODS Form 01.00.05 ============= 
+*/
+
+/* alter tables */
+
+/****** Object:  Table {databaseOwner}{objectQualifier}[ODSFormItem]    Script Date: 07/27/2012 19:26:07 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}[ODSFormItem]
+	ADD CustomRegex varchar(512) NULL,
+	 FormItemTitle varchar(255) NULL,
+	 FormLabelClass varchar(255) NULL,
+	 CultureCode nvarchar(5) NULL,
+	 AllowValueOverride bit NULL
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+/****** Object:  Table {databaseOwner}{objectQualifier}[ODSFormSubmission]    Script Date: 07/27/2012 19:26:07 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}[ODSFormSubmission]
+	ADD 	[SubmissionXML] [ntext] NULL
+GO
+
+/* drop and recreate stored procedures */
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormConvertOldSubmissions]    Script Date: 07/30/2012 22:01:03 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormConvertOldSubmissions]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormConvertOldSubmissions]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemAdd]    Script Date: 07/30/2012 22:01:03 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormItemAdd]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemAdd]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemDelete]    Script Date: 07/30/2012 22:01:03 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormItemDelete]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemDelete]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemGet]    Script Date: 07/30/2012 22:01:04 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormItemGet]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemGet]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemList]    Script Date: 07/30/2012 22:01:04 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormItemList]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemList]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemMoveDown]    Script Date: 07/30/2012 22:01:04 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormItemMoveDown]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemMoveDown]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemMoveUp]    Script Date: 07/30/2012 22:01:05 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormItemMoveUp]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemMoveUp]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemUpdate]    Script Date: 07/30/2012 22:01:05 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormItemUpdate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemUpdate]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionAdd]    Script Date: 07/30/2012 22:01:06 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormSubmissionAdd]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionAdd]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionDelete]    Script Date: 07/30/2012 22:01:06 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormSubmissionDelete]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionDelete]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionGet]    Script Date: 07/30/2012 22:01:06 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormSubmissionGet]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionGet]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionList]    Script Date: 07/30/2012 22:01:07 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormSubmissionList]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionList]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionSearch]    Script Date: 07/30/2012 22:01:07 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{databaseOwner}{objectQualifier}[ODSFormSubmissionSearch]') AND type in (N'P', N'PC'))
+DROP PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionSearch]
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormConvertOldSubmissions]    Script Date: 07/30/2012 22:01:07 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}[ODSFormConvertOldSubmissions]
+	@ConvertedRecords int = NULL  output,
+	@MaxRecords int = NULL  output 
+AS
+
+set nocount on;
+
+create table #submissions(
+	[FormSubmissionID] int,
+	[ModuleID] int,
+	[PortalID] int,
+	[SubmissionDate] datetime,
+	[Submission] text,
+	[SubmissionXML] varchar(8000))
+
+insert into #submissions
+SELECT
+	[FormSubmissionID],
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission],
+	[SubmissionXML]
+FROM ODSFormSubmission
+order by SubmissionDate desc
+
+set @ConvertedRecords = 0;
+
+declare @FormSubmissionID int, @Submission varchar(8000);
+
+declare @x varchar(8000);
+set @x = '<Submission>';
+
+DECLARE csrSubmissions CURSOR FOR 
+SELECT [FormSubmissionID], [Submission]
+FROM #submissions
+WHERE SubmissionXML is null
+OPEN csrSubmissions
+
+FETCH NEXT FROM csrSubmissions 
+INTO @FormSubmissionID, @Submission
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	--print  '---------------------'
+	--print  '---------------------'
+	
+	update #submissions set Submission = ''
+	where CURRENT OF csrSubmissions;
+	
+	declare @titolo varchar(8000), @valore varchar(8000);
+	declare @p int, @p2 int, @len int, @fine int, @finevalore int, @inizio int;
+	set @inizio=0;
+	set @finevalore=0;
+	
+	--fine submission
+	set @fine = CHARINDEX(char(10) + char(13) + char(10) + char(13) + char(10) + char(13), @Submission);
+	if @fine=0 
+		set @fine = len(@Submission);
+	
+	while @inizio <= @finevalore
+	begin
+	
+	set @p = CHARINDEX('***', @Submission, @inizio);
+	--print '@p';
+	--print @p;
+	set @p2 = CHARINDEX('***', @Submission, @p+3);
+	--print '@p2';
+	--print @p2;
+	set @len = @p2-@p + 3;
+	--print '@len';
+	--print @len;
+	--print '@titolo';
+	set @titolo = SUBSTRING(@Submission,@p, @len) + ': ';
+	--print @titolo;
+	
+	--print 'titolo finisce in ';
+	--print @p2+5;
+	
+	--fine valore
+	set @finevalore = CHARINDEX('***', @Submission, @p2+3);
+	--print 'fine valore *** at ';
+	--print @finevalore;
+	--print 'len:';
+	
+	if @finevalore = 0
+	begin
+		set @len = @fine;
+		set @inizio = @finevalore + 1;
+	end
+	else
+		set @len = @finevalore - @p2 - 3;
+	
+	--print @len;
+	
+	set @valore = SUBSTRING(@Submission,@p2+3, @len);
+	
+	--print 'valore:';
+	--print @valore;
+	--print '----------- fine valore -------------';
+	
+	set @x = @x + '<FormItem><FormLabel>' + @titolo + '</FormLabel><SubmissionValue>' + @valore + '</SubmissionValue></FormItem>';
+
+	update #submissions set Submission = convert(varchar(8000),Submission) + @titolo + ' ' + @valore + '<br/>' ,
+		SubmissionXML = @x
+	where CURRENT OF csrSubmissions;
+	
+	-- @FormSubmissionID, @Submission
+	
+	--@FormSubmissionID
+	
+	if @inizio > @finevalore
+		break;
+	
+	set @inizio = @finevalore;
+	
+	
+	end
+	
+	--print  '---------------------'
+	--print  '---------------------'
+	
+	set @titolo='';
+	set @valore='';
+	set @x = '<Submission>';
+	
+	update #submissions set SubmissionXML = SubmissionXML + '</Submission>'
+	where CURRENT OF csrSubmissions;
+	
+
+	set @ConvertedRecords = @ConvertedRecords + 1;
+	
+     -- get next submission
+    FETCH NEXT FROM csrSubmissions 
+    INTO @FormSubmissionID, @Submission
+END 
+CLOSE csrSubmissions;
+DEALLOCATE csrSubmissions;
+
+-- paginazione recordset
+declare @RowStart int, @RowEnd int, @DimPage int, @NumPage int, @MaxPage int, @NumPageCurrent int
+set @MaxRecords = (select count([FormSubmissionID]) from ODSFormSubmission);
+
+print '@MaxRecords ' ;
+print @MaxRecords ;
+print '@ConvertedRecords';
+print @ConvertedRecords;
+
+declare @iDisplayLength int, @iDisplayStart int;
+set @iDisplayLength = 9999999;
+set @iDisplayStart=0;
+
+set @RowStart = @iDisplayStart
+set @DimPage = @iDisplayLength
+set @RowEnd = @iDisplayStart + @iDisplayLength
+
+if  @RowStart is NULL and @RowEnd  is null  and @DimPage is null and  @NumPage is null begin
+	set  @RowStart= 0
+	set  @RowEnd =  9999999
+end
+
+if  @RowStart is NULL and @RowEnd  is null  begin
+	set  @RowStart= @DimPage*(@NumPage-1)+1
+	set  @RowEnd =  @DimPage*(@NumPage-1)+@DimPage
+end
+
+if @DimPage is null begin
+	set @DimPage=@RowEnd-@Rowstart
+end
+
+if @DimPage=0 
+	set @DimPage=1 --in caso di estrazione di una singolo record
+set @MaxPage = (@MaxRecords/@DimPage)
+
+declare @FMaxPage float 
+set @FMaxPage = @MaxRecords % @DimPage -- (cast(@MaxRecords as float) / cast(@DimPage as float))
+
+if @FMaxPage <> 0 --@MaxRecords > @DimPage 
+	set @MaxPage = @MaxPage +1
+	
+set @NumPageCurrent=(@RowStart/@DimPage)+1
+
+if @MaxRecords>0 and @MaxPage=0
+	set @MaxPage=1
+
+set nocount off;
+
+	select  *  from  
+	(SELECT  ROW_NUMBER() OVER (ORDER BY [SubmissionDate] ASC) as Row ,  *
+	FROM  #submissions  as Ttemp ) Ttemp 
+	where (row between @RowStart and @RowEnd
+	)
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemAdd]    Script Date: 07/30/2012 22:01:08 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemAdd]
+	@ModuleID int,
+	@PortalID int,
+	@FormType int,
+	@FormValue varchar(8000),
+	@FormSelectedValue varchar(8000),
+	@FormLabel varchar(100),
+	@SortValue int,
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass varchar(255),
+	@CustomRegex varchar(512)=null,
+	@FormItemTitle varchar(255)=null,
+	@FormLabelClass varchar(255)=null,
+	@CultureCode nvarchar(5)=null,
+	@AllowValueOverride bit=0
+AS
+	SELECT @SortValue=Min(SortValue)-1 FROM ODSFormItem
+
+	IF @SortValue Is Null 
+		Select @SortValue=1
+
+INSERT INTO ODSFormItem (
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass],
+	[CustomRegex],
+	[FormItemTitle],
+	[FormLabelClass],
+	[CultureCode],
+	[AllowValueOverride]
+) VALUES (
+	@ModuleID,
+	@PortalID,
+	@FormType,
+	@FormValue,
+	@FormSelectedValue,
+	@FormLabel,
+	@SortValue,
+	@Optional,
+	@Width,
+	@Height,
+	@CSSClass,
+	@CustomRegex,
+	@FormItemTitle,
+	@FormLabelClass,
+	@CultureCode,
+	@AllowValueOverride
+)
+
+select SCOPE_IDENTITY()
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemDelete]    Script Date: 07/30/2012 22:01:11 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemDelete]
+	@FormItemID int
+AS
+
+DELETE FROM ODSFormItem
+WHERE
+	[FormItemID] = @FormItemID
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemGet]    Script Date: 07/30/2012 22:01:11 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemGet]
+	@FormItemID int
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass],
+	[CustomRegex],
+	[FormItemTitle],
+	[FormLabelClass],
+	[CultureCode] as [Culture],
+	[AllowValueOverride]
+FROM ODSFormItem
+WHERE
+	[FormItemID] = @FormItemID
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemList]    Script Date: 07/30/2012 22:01:12 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemList]
+	@PortalID int,
+	@ModuleID int,
+	@CultureCode varchar(5)=null
+	
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass],
+	[CustomRegex],
+	[FormItemTitle],
+	[FormLabelClass],
+	[CultureCode] as [Culture],
+	[AllowValueOverride]
+FROM ODSFormItem
+WHERE ModuleID=@ModuleID AND PortalID=@PortalID
+and (@CultureCode is null or CultureCode=@CultureCode)
+ORDER BY SortValue DESC
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemMoveDown]    Script Date: 07/30/2012 22:01:13 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemMoveDown]
+@FormItemID int
+AS
+declare @SwichID int
+declare @SortValue int
+declare @SwichSortValue int
+declare @Count int
+declare @ModuleID int
+
+/* Find moduleID */
+SELECT @ModuleID=ModuleID FROM ODSFormItem WHERE FormItemID=@FormItemID
+
+/* Find sortvalue for this item */
+SELECT @SortValue=SortValue
+FROM ODSFormItem
+WHERE FormItemID=@FormItemID AND  ModuleID=@ModuleID
+
+/* Find ID and SortValue for item to swich with */
+SELECT TOP 1 @SwichID=FormItemID, @SwichSortValue=SortValue, @Count=1
+FROM ODSFormItem
+WHERE  (SortValue < @SortValue)  AND ModuleID=@ModuleID
+ORDER BY SortValue DESC
+
+/* Swich sortvalues */
+If @Count=1
+	Begin
+		UPDATE ODSFormItem SET
+		SortValue = @SwichSortValue 
+		WHERE  FormItemID=@FormItemID  AND ModuleID=@ModuleID
+		
+		UPDATE ODSFormItem SET
+		SortValue = @SortValue
+		WHERE  FormItemID=@SwichID  AND ModuleID=@ModuleID
+	end
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemMoveUp]    Script Date: 07/30/2012 22:01:13 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemMoveUp]
+@FormItemID int
+AS
+declare @SwichID int
+declare @SortValue int
+declare @SwichSortValue int
+declare @Count int
+declare @ModuleID int
+
+/* Find moduleID */
+SELECT @ModuleID=ModuleID FROM ODSFormItem WHERE FormItemID=@FormItemID
+
+/* Find sortvalue for this item */
+SELECT @SortValue=SortValue
+FROM ODSFormItem
+WHERE FormItemID=@FormItemID AND  ModuleID=@ModuleID
+
+/* Find ID and SortValue for item to swich with */
+SELECT TOP 1 @SwichID=FormItemID, @SwichSortValue=SortValue, @Count=1
+FROM ODSFormItem
+WHERE  (SortValue > @SortValue)  AND ModuleID=@ModuleID
+ORDER BY SortValue ASC
+
+/* Swich sortvalues */
+If @Count=1
+	Begin
+		UPDATE ODSFormItem SET
+		SortValue = @SwichSortValue 
+		WHERE  FormItemID=@FormItemID  AND ModuleID=@ModuleID
+		
+		UPDATE ODSFormItem SET
+		SortValue = @SortValue
+		WHERE  FormItemID=@SwichID  AND ModuleID=@ModuleID
+	end
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormItemUpdate]    Script Date: 07/30/2012 22:01:14 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemUpdate]
+	@FormItemID int, 
+	@ModuleID int, 
+	@PortalID int, 
+	@FormType int, 
+	@FormValue varchar(8000), 
+	@FormSelectedValue varchar(8000), 
+	@FormLabel varchar(100),
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass varchar(255),
+	@CustomRegex varchar(512)=null,
+	@FormItemTitle varchar(255)=null,
+	@FormLabelClass varchar(255)=null,
+	@CultureCode nvarchar(5)=null,
+	@AllowValueOverride bit=0
+AS
+
+UPDATE ODSFormItem SET
+	[ModuleID] = @ModuleID,
+	[PortalID] = @PortalID,
+	[FormType] = @FormType,
+	[FormValue] = @FormValue,
+	[FormSelectedValue] = @FormSelectedValue,
+	[FormLabel] = @FormLabel,
+	[Optional] = @Optional,
+	[Width] = @Width,
+	[Height] = @Height,
+	[CSSClass] = @CSSClass,
+	[CustomRegex] = @CustomRegex,
+	[FormItemTitle] = @FormItemTitle,
+	[FormLabelClass] = @FormLabelClass,
+	--[CultureCode] = @CultureCode, -- avoid updating culture: issues with ifinity friendlyurl to be solved
+	[AllowValueOverride] = @AllowValueOverride
+WHERE
+	[FormItemID] = @FormItemID
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionAdd]    Script Date: 07/30/2012 22:01:16 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionAdd]
+	@ModuleID int,
+	@PortalID int,
+	@SubmissionDate datetime,
+	@Submission text,
+	@SubmissionXML ntext
+AS
+
+INSERT INTO ODSFormSubmission (
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission],
+	[SubmissionXML]
+) VALUES (
+	@ModuleID,
+	@PortalID,
+	@SubmissionDate,
+	@Submission,
+	@SubmissionXML
+)
+
+select SCOPE_IDENTITY()
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionDelete]    Script Date: 07/30/2012 22:01:17 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionDelete]
+	@FormSubmissionID int
+AS
+
+DELETE FROM ODSFormSubmission
+WHERE
+	[FormSubmissionID] = @FormSubmissionID
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionGet]    Script Date: 07/30/2012 22:01:18 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionGet]
+	@FormSubmissionID int
+AS
+
+SELECT
+	[FormSubmissionID],
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission],
+	[SubmissionXML]
+FROM ODSFormSubmission
+WHERE
+	[FormSubmissionID] = @FormSubmissionID
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionList]    Script Date: 07/30/2012 22:01:18 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+CREATE  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionList]
+	  @PortalID int,
+	@ModuleID int
+AS
+
+SELECT
+	[FormSubmissionID],
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission],
+	[SubmissionXML]
+FROM ODSFormSubmission
+WHERE PortalID=@PortalID AND ModuleID=@ModuleID
+
+
+
+GO
+
+/****** Object:  StoredProcedure {databaseOwner}{objectQualifier}[ODSFormSubmissionSearch]    Script Date: 07/30/2012 22:01:19 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}[ODSFormSubmissionSearch]
+	@PortalID int,
+	@ModuleID int,
+	@sSearch varchar(255),
+	@iDisplayStart int,
+	@iDisplayLength int,
+	@iSortCol_0 int = 0,
+	@sSortDir_0 varchar(4)='DESC',
+	@MaxRecords int = NULL  output 
+AS
+
+set nocount on;
+
+create table #submissions(
+	[FormSubmissionID] int,
+	[ModuleID] int,
+	[PortalID] int,
+	[SubmissionDate] datetime,
+	[Submission] text,
+	[SubmissionXML] varchar(8000))
+
+insert into #submissions
+SELECT
+	[FormSubmissionID],
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission],
+	[SubmissionXML]
+FROM ODSFormSubmission
+WHERE PortalID=@PortalID AND ModuleID=@ModuleID
+AND (@sSearch IS NULL OR Submission LIKE '%' + @sSearch + '%')
+order by SubmissionDate desc
+
+
+-- dynamically create xml for old submissions
+declare @FormSubmissionID int, @Submission varchar(8000);
+declare @x varchar(8000);
+set @x = '<Submission>';
+
+DECLARE csrSubmissions CURSOR FOR 
+SELECT [FormSubmissionID], [Submission]
+FROM #submissions
+WHERE SubmissionXML is null
+OPEN csrSubmissions
+
+FETCH NEXT FROM csrSubmissions 
+INTO @FormSubmissionID, @Submission
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	--print  '---------------------'
+	--print  '---------------------'
+	
+	update #submissions set Submission = ''
+	where CURRENT OF csrSubmissions;
+	
+	declare @titolo varchar(8000), @valore varchar(8000);
+	declare @p int, @p2 int, @len int, @fine int, @finevalore int, @inizio int;
+	set @inizio=0;
+	set @finevalore=0;
+	
+	--fine submission
+	set @fine = CHARINDEX(char(10) + char(13) + char(10) + char(13) + char(10) + char(13), @Submission);
+	if @fine=0 
+		set @fine = len(@Submission);
+	
+	while @inizio <= @finevalore
+	begin
+	
+	set @p = CHARINDEX('***', @Submission, @inizio);
+	--print '@p';
+	--print @p;
+	set @p2 = CHARINDEX('***', @Submission, @p+3);
+	--print '@p2';
+	--print @p2;
+	set @len = @p2-@p + 3;
+	--print '@len';
+	--print @len;
+	--print '@titolo';
+	set @titolo = SUBSTRING(@Submission,@p, @len); -- + ': ';
+	--print @titolo;
+	
+	--print 'titolo finisce in ';
+	--print @p2+5;
+	
+	--fine valore
+	set @finevalore = CHARINDEX('***', @Submission, @p2+3);
+	--print 'fine valore *** at ';
+	--print @finevalore;
+	--print 'len:';
+	
+	if @finevalore = 0
+	begin
+		set @len = @fine;
+		set @inizio = @finevalore + 1;
+	end
+	else
+		set @len = @finevalore - @p2 - 3;
+	
+	--print @len;
+	
+	set @valore = SUBSTRING(@Submission,@p2+3, @len);
+	
+	--print 'valore:';
+	--print @valore;
+	--print '----------- fine valore -------------';
+	
+	set @x = @x + '<FormItem FormLabel=''' + @titolo + '''><SubmissionValue>' + @valore + '</SubmissionValue></FormItem>';
+
+	update #submissions set Submission = convert(varchar(8000),Submission) + @titolo + ' ' + @valore + '<br/>' ,
+		SubmissionXML = @x
+	where CURRENT OF csrSubmissions;
+	
+	-- @FormSubmissionID, @Submission
+	
+	--@FormSubmissionID
+	
+	if @inizio > @finevalore
+		break;
+	
+	set @inizio = @finevalore;
+	
+	
+	end
+	
+	--print  '---------------------'
+	--print  '---------------------'
+	
+	set @titolo='';
+	set @valore='';
+	set @x = '<Submission>';
+	
+	update #submissions set SubmissionXML = SubmissionXML + '</Submission>'
+	where CURRENT OF csrSubmissions;
+	
+	
+     -- get next submission
+    FETCH NEXT FROM csrSubmissions 
+    INTO @FormSubmissionID, @Submission
+END 
+CLOSE csrSubmissions;
+DEALLOCATE csrSubmissions;
+
+
+-- paginazione recordset
+declare @RowStart int, @RowEnd int, @DimPage int, @NumPage int, @MaxPage int, @NumPageCurrent int
+set @MaxRecords = (select count([FormSubmissionID]) from ODSFormSubmission WHERE PortalID=@PortalID AND ModuleID=@ModuleID)
+
+if @iDisplayLength=-1 set @iDisplayLength = 9999999
+
+set @RowStart = @iDisplayStart
+set @DimPage = @iDisplayLength
+set @RowEnd = @iDisplayStart + @iDisplayLength
+
+if  @RowStart is NULL and @RowEnd  is null  and @DimPage is null and  @NumPage is null begin
+	set  @RowStart= 0
+	set  @RowEnd =  9999999
+end
+
+if  @RowStart is NULL and @RowEnd  is null  begin
+	set  @RowStart= @DimPage*(@NumPage-1)+1
+	set  @RowEnd =  @DimPage*(@NumPage-1)+@DimPage
+end
+
+if @DimPage is null begin
+	set @DimPage=@RowEnd-@Rowstart
+end
+
+if @DimPage=0 
+	set @DimPage=1 --in caso di estrazione di una singolo record
+set @MaxPage = (@MaxRecords/@DimPage)
+
+declare @FMaxPage float 
+set @FMaxPage = @MaxRecords % @DimPage -- (cast(@MaxRecords as float) / cast(@DimPage as float))
+
+if @FMaxPage <> 0 --@MaxRecords > @DimPage 
+	set @MaxPage = @MaxPage +1
+	
+set @NumPageCurrent=(@RowStart/@DimPage)+1
+
+if @MaxRecords>0 and @MaxPage=0
+	set @MaxPage=1
+
+set nocount off;
+
+if @sSortDir_0='ASC'
+	select  *  from  
+	(SELECT  ROW_NUMBER() OVER (ORDER BY [SubmissionDate] ASC) as Row ,  *
+	FROM  #submissions  as Ttemp ) Ttemp 
+	where (row between @RowStart and @RowEnd
+	)
+else
+	select  *  from  
+	(SELECT  ROW_NUMBER() OVER (ORDER BY [SubmissionDate] DESC) as Row ,  *
+	FROM  #submissions  as Ttemp ) Ttemp 
+	where (row between @RowStart and @RowEnd
+	)
+GO
+

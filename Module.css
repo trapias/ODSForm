@@ -1,0 +1,16 @@
+/* ================================
+    CSS STYLES FOR ODS Form
+   ================================
+*/
+.dnnForm .dnnFormLabel span {padding:2px}
+
+.dnnFormRequired, dnnFormRequired:focus,
+.dnnForm input.dnnFormRequired, 
+.dnnForm input.dnnFormRequired:focus, 
+.dnnForm textarea.dnnFormRequired, 
+.dnnForm textarea.dnnFormRequired:focus, 
+.dnnForm select.dnnFormRequired,
+.dnnForm select.dnnFormRequired:focus
+{border-left:5px #F00 solid;}
+
+span.dnnFormRequired:after, div.dnnFormItem.dnnFormRequired > div.dnnLabel span:after {content: ''}

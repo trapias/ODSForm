@@ -1,0 +1,60 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+/** Drop Tables **/
+
+
+DROP TABLE {databaseOwner}{objectQualifier}ODSFormItem
+GO
+
+DROP TABLE {databaseOwner}{objectQualifier}ODSFormItemSubmission
+GO
+
+/** Drop Stored Procedures **/
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemAdd
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemDelete
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemGet
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemList
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemMoveDown
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemMoveUp
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemUpdate
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionAdd
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionDelete
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionGet
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionList
+GO
+
+DROP PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionSearch
+GO
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

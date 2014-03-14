@@ -1,0 +1,139 @@
+﻿/* 
+ ============= ODS Form 01.00.06 SqlDataProvider ============= 
+*/
+
+/* alter tables */
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ALTER COLUMN FormValue nvarchar(MAX);
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ALTER COLUMN FormSelectedValue nvarchar(MAX);
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ALTER COLUMN FormLabel nvarchar(255);
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ALTER COLUMN CSSClass nvarchar(255);
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ALTER COLUMN CustomRegex nvarchar(MAX);
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ALTER COLUMN FormItemTitle nvarchar(256);
+GO
+
+ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ALTER COLUMN FormLabelClass nvarchar(256);
+GO
+
+
+
+ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemUpdate]
+	@FormItemID int, 
+	@ModuleID int, 
+	@PortalID int, 
+	@FormType int, 
+	@FormValue varchar(8000), 
+	@FormSelectedValue varchar(8000), 
+	@FormLabel varchar(255),
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass varchar(255),
+	@CustomRegex varchar(512)=null,
+	@FormItemTitle varchar(255)=null,
+	@FormLabelClass varchar(255)=null,
+	@CultureCode nvarchar(5)=null,
+	@AllowValueOverride bit=0
+AS
+
+UPDATE ODSFormItem SET
+	[ModuleID] = @ModuleID,
+	[PortalID] = @PortalID,
+	[FormType] = @FormType,
+	[FormValue] = @FormValue,
+	[FormSelectedValue] = @FormSelectedValue,
+	[FormLabel] = @FormLabel,
+	[Optional] = @Optional,
+	[Width] = @Width,
+	[Height] = @Height,
+	[CSSClass] = @CSSClass,
+	[CustomRegex] = @CustomRegex,
+	[FormItemTitle] = @FormItemTitle,
+	[FormLabelClass] = @FormLabelClass,
+	--[CultureCode] = @CultureCode, -- avoid updating culture: issues with ifinity friendlyurl to be solved
+	[AllowValueOverride] = @AllowValueOverride
+WHERE
+	[FormItemID] = @FormItemID;
+
+	GO
+
+ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemAdd]
+	@ModuleID int,
+	@PortalID int,
+	@FormType int,
+	@FormValue varchar(8000),
+	@FormSelectedValue varchar(8000),
+	@FormLabel varchar(255),
+	@SortValue int,
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass varchar(255),
+	@CustomRegex varchar(512)=null,
+	@FormItemTitle varchar(255)=null,
+	@FormLabelClass varchar(255)=null,
+	@CultureCode nvarchar(5)=null,
+	@AllowValueOverride bit=0
+AS
+	SELECT @SortValue=Min(SortValue)-1 FROM ODSFormItem
+
+	IF @SortValue Is Null 
+		Select @SortValue=1
+
+INSERT INTO ODSFormItem (
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass],
+	[CustomRegex],
+	[FormItemTitle],
+	[FormLabelClass],
+	[CultureCode],
+	[AllowValueOverride]
+) VALUES (
+	@ModuleID,
+	@PortalID,
+	@FormType,
+	@FormValue,
+	@FormSelectedValue,
+	@FormLabel,
+	@SortValue,
+	@Optional,
+	@Width,
+	@Height,
+	@CSSClass,
+	@CustomRegex,
+	@FormItemTitle,
+	@FormLabelClass,
+	@CultureCode,
+	@AllowValueOverride
+)
+
+select SCOPE_IDENTITY()
+
+GO

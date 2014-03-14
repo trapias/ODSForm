@@ -1,0 +1,520 @@
+﻿/************************************************************/
+/*****              SQLDataProvider                     *****/
+/*****              Form               *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}*****/
+/*****                                                  *****/
+/************************************************************/
+
+/* Insert here the code to create tables and stored procs   */
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItem') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table {databaseOwner}{objectQualifier}ODSFormItem
+GO
+
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormSubmission') and OBJECTPROPERTY(id, N'IsUserTable') = 1)
+drop table {databaseOwner}{objectQualifier}ODSFormSubmission
+GO
+
+
+/* -------------------------------------------------------------------------------------
+/  ODSFormItem
+/  ------------------------------------------------------------------------------------- */
+CREATE TABLE {databaseOwner}{objectQualifier}ODSFormItem (
+	[FormItemID] [int] IDENTITY (1, 1) NOT NULL ,
+	[ModuleID] [int] NOT NULL ,
+	[PortalID] [int] NOT NULL ,
+	[FormType] [int] NOT NULL ,
+	[FormValue] [varchar] (8000) COLLATE Danish_Norwegian_CI_AS NULL ,
+	[FormSelectedValue] [varchar] (8000) COLLATE Danish_Norwegian_CI_AS NULL ,
+	[FormLabel] [varchar] (100) COLLATE Danish_Norwegian_CI_AS NULL ,
+	[SortValue] [int] NOT NULL ,
+	[Optional] [bit] NOT NULL DEFAULT (0),
+	CONSTRAINT [PK_ODSFormItems] PRIMARY KEY  CLUSTERED 
+	(
+		[FormItemID]
+	)  ON [PRIMARY] 
+) ON [PRIMARY]
+GO
+
+
+/* -------------------------------------------------------------------------------------
+/  ODSFormSubmission
+/  ------------------------------------------------------------------------------------- */
+CREATE TABLE {databaseOwner}{objectQualifier}ODSFormSubmission (
+	[FormSubmissionID] [int] IDENTITY (1, 1) NOT NULL ,
+	[ModuleID] [int] NOT NULL ,
+	[PortalID] [int] NOT NULL ,
+	[SubmissionDate] [datetime] NOT NULL ,
+	[Submission] [text] COLLATE Danish_Norwegian_CI_AS NOT NULL ,
+	CONSTRAINT [PK_ODSFormSubmission] PRIMARY KEY  CLUSTERED 
+	(
+		[FormSubmissionID]
+	)  ON [PRIMARY] 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+
+
+/* =====================================================================================
+/   TABLE: ODSFormItem
+/  ===================================================================================== */
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormItemGet    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItemGet') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormItemGet
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormItemList    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItemList') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormItemList
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormItemAdd    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItemAdd') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormItemAdd
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormItemUpdate    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItemUpdate') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormItemUpdate
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormItemDelete    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItemDelete') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormItemDelete
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormItemMoveUp    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItemMoveUp') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormItemMoveUp
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormItemMoveDown   Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormItemMoveDown') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormItemMoveDown
+GO
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormItemGet
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemGet
+	@FormItemID int
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional]
+FROM {objectQualifier}ODSFormItem
+WHERE
+	[FormItemID] = @FormItemID
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormItemList 
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemList
+	@portalID int,
+	@moduleID int
+	
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional]
+FROM {objectQualifier}ODSFormItem
+WHERE ModuleID=@ModuleID AND PortalID=@PortalID
+ORDER BY SortValue DESC
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormItemAdd
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemAdd
+	@ModuleID int,
+	@PortalID int,
+	@FormType int,
+	@FormValue varchar(8000),
+	@FormSelectedValue varchar(8000),
+	@FormLabel varchar(100),
+	@SortValue int,
+	@Optional bit
+AS
+	SELECT @SortValue=Min(SortValue)-1 FROM {objectQualifier}ODSFormItem
+
+	IF @SortValue Is Null 
+		Select @SortValue=1
+
+INSERT INTO {objectQualifier}ODSFormItem (
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional]
+) VALUES (
+	@ModuleID,
+	@PortalID,
+	@FormType,
+	@FormValue,
+	@FormSelectedValue,
+	@FormLabel,
+	@SortValue,
+	@Optional
+)
+
+select SCOPE_IDENTITY()
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormItemUpdate
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemUpdate
+	@FormItemID int, 
+	@ModuleID int, 
+	@PortalID int, 
+	@FormType int, 
+	@FormValue varchar(8000), 
+	@FormSelectedValue varchar(8000), 
+	@FormLabel varchar(100),
+	@Optional bit 
+AS
+
+UPDATE {objectQualifier}ODSFormItem SET
+	[ModuleID] = @ModuleID,
+	[PortalID] = @PortalID,
+	[FormType] = @FormType,
+	[FormValue] = @FormValue,
+	[FormSelectedValue] = @FormSelectedValue,
+	[FormLabel] = @FormLabel,
+	[Optional] = @Optional
+WHERE
+	[FormItemID] = @FormItemID
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormItemDelete
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemDelete
+	@FormItemID int
+AS
+
+DELETE FROM {objectQualifier}ODSFormItem
+WHERE
+	[FormItemID] = @FormItemID
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+
+
+/* =====================================================================================
+/   TABLE: ODSFormSubmission
+/  ===================================================================================== */
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormSubmissionGet    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormSubmissionGet') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormSubmissionGet
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormSubmissionList    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormSubmissionList') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormSubmissionList
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormSubmissionAdd    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormSubmissionAdd') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormSubmissionAdd
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormSubmissionUpdate    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormSubmissionUpdate') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormSubmissionUpdate
+GO
+
+/****** Object:  Stored Procedure {databaseOwner}{objectQualifier}ODSFormSubmissionDelete    Script Date: 30. august 2005 ******/
+if exists (select * from dbo.sysobjects where id = object_id(N'{databaseOwner}{objectQualifier}ODSFormSubmissionDelete') and OBJECTPROPERTY(id, N'IsProcedure') = 1)
+drop procedure {databaseOwner}{objectQualifier}ODSFormSubmissionDelete
+GO
+
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormSubmissionGet
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionGet
+	@FormSubmissionID int
+AS
+
+SELECT
+	[FormSubmissionID],
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission]
+FROM {objectQualifier}ODSFormSubmission
+WHERE
+	[FormSubmissionID] = @FormSubmissionID
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormSubmissionList 
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionList
+	  @PortalID int,
+	@ModuleID int
+AS
+
+SELECT
+	[FormSubmissionID],
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission]
+FROM {objectQualifier}ODSFormSubmission
+WHERE PortalID=@PortalID AND ModuleID=@ModuleID
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormSubmissionAdd
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionAdd
+	@ModuleID int,
+	@PortalID int,
+	@SubmissionDate datetime,
+	@Submission text
+AS
+
+INSERT INTO {objectQualifier}ODSFormSubmission (
+	[ModuleID],
+	[PortalID],
+	[SubmissionDate],
+	[Submission]
+) VALUES (
+	@ModuleID,
+	@PortalID,
+	@SubmissionDate,
+	@Submission
+)
+
+select SCOPE_IDENTITY()
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormSubmissionDelete
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormSubmissionDelete
+	@FormSubmissionID int
+AS
+
+DELETE FROM {objectQualifier}ODSFormSubmission
+WHERE
+	[FormSubmissionID] = @FormSubmissionID
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormItemMoveUp
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemMoveUp
+@FormItemID int
+AS
+declare @SwichID int
+declare @SortValue int
+declare @SwichSortValue int
+declare @Count int
+declare @ModuleID int
+
+/* Find moduleID */
+SELECT @ModuleID=ModuleID FROM {objectQualifier}ODSFormItem WHERE FormItemID=@FormItemID
+
+/* Find sortvalue for this item */
+SELECT @SortValue=SortValue
+FROM {objectQualifier}ODSFormItem
+WHERE FormItemID=@FormItemID AND  ModuleID=@ModuleID
+
+/* Find ID and SortValue for item to swich with */
+SELECT TOP 1 @SwichID=FormItemID, @SwichSortValue=SortValue, @Count=1
+FROM {objectQualifier}ODSFormItem
+WHERE  (SortValue > @SortValue)  AND ModuleID=@ModuleID
+ORDER BY SortValue ASC
+
+/* Swich sortvalues */
+If @Count=1
+	Begin
+		UPDATE {objectQualifier}ODSFormItem SET
+		SortValue = @SwichSortValue 
+		WHERE  FormItemID=@FormItemID  AND ModuleID=@ModuleID
+		
+		UPDATE {objectQualifier}ODSFormItem SET
+		SortValue = @SortValue
+		WHERE  FormItemID=@SwichID  AND ModuleID=@ModuleID
+	end
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
+
+/* -------------------------------------------------------------------------------------
+/   ODSFormItemMoveDown
+/  ------------------------------------------------------------------------------------- */
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS OFF 
+GO
+
+CREATE PROCEDURE {databaseOwner}{objectQualifier}ODSFormItemMoveDown
+@FormItemID int
+AS
+declare @SwichID int
+declare @SortValue int
+declare @SwichSortValue int
+declare @Count int
+declare @ModuleID int
+
+/* Find moduleID */
+SELECT @ModuleID=ModuleID FROM {objectQualifier}ODSFormItem WHERE FormItemID=@FormItemID
+
+/* Find sortvalue for this item */
+SELECT @SortValue=SortValue
+FROM {objectQualifier}ODSFormItem
+WHERE FormItemID=@FormItemID AND  ModuleID=@ModuleID
+
+/* Find ID and SortValue for item to swich with */
+SELECT TOP 1 @SwichID=FormItemID, @SwichSortValue=SortValue, @Count=1
+FROM {objectQualifier}ODSFormItem
+WHERE  (SortValue < @SortValue)  AND ModuleID=@ModuleID
+ORDER BY SortValue DESC
+
+/* Swich sortvalues */
+If @Count=1
+	Begin
+		UPDATE {objectQualifier}ODSFormItem SET
+		SortValue = @SwichSortValue 
+		WHERE  FormItemID=@FormItemID  AND ModuleID=@ModuleID
+		
+		UPDATE {objectQualifier}ODSFormItem SET
+		SortValue = @SortValue
+		WHERE  FormItemID=@SwichID  AND ModuleID=@ModuleID
+	end
+GO
+
+SET QUOTED_IDENTIFIER OFF 
+GO
+SET ANSI_NULLS ON 
+GO
