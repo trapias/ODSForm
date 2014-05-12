@@ -3,6 +3,7 @@ Imports System.Web
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports ODS.DNN.Modules.Form.Business
+Imports DotNetNuke.Framework.JavaScriptLibraries
 
 Namespace ODS.DNN.Modules.Form
 
@@ -12,7 +13,9 @@ Namespace ODS.DNN.Modules.Form
         Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
             Try
                 If Not Page.IsPostBack Then
-
+                    JavaScript.RequestRegistration(CommonJs.jQuery)
+                    JavaScript.RequestRegistration(CommonJs.jQueryUI)
+                    JavaScript.RequestRegistration(CommonJs.DnnPlugins)
                 End If
 
 

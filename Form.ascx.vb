@@ -10,18 +10,18 @@ Imports System.Reflection
 Imports System.Xml
 Imports DotNetNuke.Instrumentation
 Imports System.Text.RegularExpressions
+Imports DotNetNuke.Framework.JavaScriptLibraries
 
 Namespace ODS.DNN.Modules.Form
 
     ''' <summary>
-    ''' 01.00.06 beta 6, 21/10/2013
+    ''' 01.00.08
     ''' </summary>
     ''' <remarks></remarks>
     Partial Class Form
         Inherits Entities.Modules.PortalModuleBase
         Implements Entities.Modules.IActionable
 
-        'Private IMGREQUIRED As String
         Private hasValidators As Boolean = False
         Private LocalizeForm As Boolean = False
         Private cultureCode As String = Nothing
@@ -31,46 +31,44 @@ Namespace ODS.DNN.Modules.Form
 
         Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
-            ' If Not Page.IsPostBack Then
-            DotNetNuke.Framework.jQuery.RequestRegistration()
-            DotNetNuke.Framework.jQuery.RequestUIRegistration()
-            DotNetNuke.Framework.jQuery.RequestDnnPluginsRegistration()
-            ' End If
+            If Not Page.IsPostBack Then
 
-            'cmdSubmit.ValidationGroup = "ods" & Me.ModuleId
+                JavaScript.RequestRegistration(CommonJs.jQuery)
+                JavaScript.RequestRegistration(CommonJs.jQueryUI)
+                JavaScript.RequestRegistration(CommonJs.DnnPlugins)
 
-            'IMGREQUIRED = "<img src=""" & ResolveUrl("~/DesktopModules/Form/images/asterisk_orange.png") & """ alt=""" & Localization.GetString("Required", LocalResourceFile) & """ title=""" & Localization.GetString("Required", LocalResourceFile) & """ />"
+                LocalizeForm = CType(Settings("EnableLocalization"), Boolean)
+                If LocalizeForm Then cultureCode = System.Threading.Thread.CurrentThread.CurrentCulture.ToString
 
-            LocalizeForm = CType(Settings("EnableLocalization"), Boolean)
-            If LocalizeForm Then cultureCode = System.Threading.Thread.CurrentThread.CurrentCulture.ToString
+                Dim AllowContactUsers As Boolean = CType(Settings("AllowContactUsers"), Boolean)
+                If AllowContactUsers AndAlso Request("userid") <> "" Then
 
-            Dim AllowContactUsers As Boolean = CType(Settings("AllowContactUsers"), Boolean)
-            If AllowContactUsers AndAlso Request("userid") <> "" Then
+                    Try
+                        Dim u As UserInfo = UserController.GetUserById(Me.PortalId, Request("userid"))
+                        If Not u Is Nothing Then
 
-                Try
-                    Dim u As UserInfo = UserController.GetUserById(Me.PortalId, Request("userid"))
-                    If Not u Is Nothing Then
+                            Me.ModuleConfiguration.ModuleTitle = Localization.GetString("ContactUser", LocalResourceFile) & " " & u.DisplayName
 
-                        Me.ModuleConfiguration.ModuleTitle = Localization.GetString("ContactUser", LocalResourceFile) & " " & u.DisplayName
+                        End If
+                    Catch ex As Exception
+                    End Try
+                Else
 
+                    Dim localizedTitle As String = Settings("ModuleTitle-" & cultureCode)
+                    If localizedTitle <> "" Then
+                        Me.ModuleConfiguration.ModuleTitle = localizedTitle
                     End If
-                Catch ex As Exception
-                End Try
-            Else
 
-                Dim localizedTitle As String = Settings("ModuleTitle-" & cultureCode)
-                If localizedTitle <> "" Then
-                    Me.ModuleConfiguration.ModuleTitle = localizedTitle
                 End If
 
-            End If
+                'AllowMailto
+                Dim AllowMailto As Boolean = CType(Settings("AllowMailto"), Boolean)
+                If AllowMailto AndAlso ValidateMailto() Then
+                    Me.ModuleConfiguration.ModuleTitle = Localization.GetString("ContactUser", LocalResourceFile) & " " & Request("mailto")
+                End If
 
-            'AllowMailto
-            Dim AllowMailto As Boolean = CType(Settings("AllowMailto"), Boolean)
-            If AllowMailto AndAlso ValidateMailto() Then
-                Me.ModuleConfiguration.ModuleTitle = Localization.GetString("ContactUser", LocalResourceFile) & " " & Request("mailto")
-            End If
 
+            End If
         End Sub
 
         Private Function ValidateMailto() As Boolean
@@ -86,9 +84,8 @@ Namespace ODS.DNN.Modules.Form
                 If ref Is Nothing Then ref = ""
                 If ref.ToLower.StartsWith("https://") Then ref = ref.Substring(8)
                 If ref.ToLower.StartsWith("http://") Then ref = ref.Substring(7)
-                ' Dim elencoAlias() As String = {}
 
-                Dim pa As PortalAliasCollection = PortalAliasController.GetPortalAliasLookup()
+                Dim pa As Dictionary(Of String, PortalAliasInfo) = DotNetNuke.Entities.Portals.Internal.TestablePortalAliasController.Instance.GetPortalAliases()
                 If Not isvalid Then
                     'validate against portal aliases
                     For Each sAlias As PortalAliasInfo In pa.Values
@@ -166,18 +163,11 @@ Namespace ODS.DNN.Modules.Form
                 aSubmit.CausesValidation = True
 
                 Dim aReset As New LinkButton
-
-                '01.00.02
-                'aSubmit.HRef = "javascript:ODSSubmitForm" & Me.ModuleId & "();"
-                'aReset.HRef = "javascript:ODSResetForm" & Me.ModuleId & "();"
-
                 AddHandler aSubmit.Click, AddressOf Me.cmdSubmit_Click
                 AddHandler aReset.Click, AddressOf Me.cmdReset_Click
 
                 Dim sClass As String = CType(Settings("ButtonsClass"), String)
                 If sClass Is Nothing Then sClass = String.Empty
-                'If sClass.Trim = String.Empty Then sClass = "medium FormButton orange"
-                'aSubmit.Attributes.Add("class", sClass)
 
                 If sClass = String.Empty Then
                     aSubmit.CssClass = "dnnPrimaryAction"
@@ -199,7 +189,7 @@ Namespace ODS.DNN.Modules.Form
                     If Settings("txtResetText-" & cultureCode) <> "" Then
                         aReset.Text = Settings("txtResetText-" & cultureCode)
                     End If
-				Else
+                Else
                     'localization not enabled
                     If Settings("txtSubmitText-") <> "" Then
                         aSubmit.Text = Settings("txtSubmitText-")
@@ -208,31 +198,12 @@ Namespace ODS.DNN.Modules.Form
                     If Settings("txtResetText-") <> "" Then
                         aReset.Text = Settings("txtResetText-")
                     End If
+
                 End If
-
-                'aSubmit.OnClientClick = "checkhash();"
-
-                'aReset.Attributes.Add("class", sClass)
-
-
-                ' End If
 
                 'load/reload controls 
                 Dim fieldset As New HtmlGenericControl("fieldset")
                 formDIV.Controls.Add(fieldset)
-
-                '01.00.02: custom image for required fields
-                '01.00.05: moved to be reloaded with postback
-                '01.00.06: suppressed, now use dnnFormRequired css class
-                'Dim imgRF As String = CType(Settings("imgRequiredFields"), String)
-                'If imgRF <> String.Empty Then
-                '    Try
-                '        Dim ff As DotNetNuke.Services.FileSystem.FileInfo = FileManager.Instance().GetFile(imgRF) ' New FileController().GetFileById(imgRF, Me.PortalId) ' 
-                '        IMGREQUIRED = "<img src=""" & IO.Path.Combine(Me.PortalSettings.HomeDirectory, ff.RelativePath) & """ alt=""" & Localization.GetString("Required", LocalResourceFile) & """ title=""" & Localization.GetString("Required", LocalResourceFile) & """ />"
-                '    Catch ex As Exception
-                '        'in case of error use the default image
-                '    End Try
-                'End If
 
                 Dim o As Object
                 Dim oInfo As FormItemInfo
@@ -241,7 +212,7 @@ Namespace ODS.DNN.Modules.Form
                 Dim oController As New FormItemController
                 Dim al As ArrayList = oController.List(MyBase.PortalId, MyBase.ModuleId, cultureCode)
 
-                'hide module if not fields are configured
+                    'hide module if not fields are configured
                 If al.Count = 0 AndAlso Not IsEditable Then
                     'plcODS.Controls.Remove(formDIV)
                     Me.Visible = False
@@ -583,23 +554,6 @@ Namespace ODS.DNN.Modules.Form
                             If oInfo.Optional = False Then AddRequiredFieldValidator(oInfo, ed, div)
                             div.Controls.Add(ed)
 
-                            'for LoadControl
-                            'If oInfo.Optional = False Then
-                            '    ed.Attributes("class") &= " dnnFormRequired"
-
-                            '    Dim val As New RequiredFieldValidator()
-                            '    val.ValidationGroup = "ods" & Me.ModuleId
-                            '    val.ControlToValidate = ed.ID
-                            '    val.CssClass = "dnnFormMessage dnnFormError"
-                            '    val.ErrorMessage = oInfo.FormLabel & "&nbsp;" & Localization.GetString("FieldRequired", LocalResourceFile)
-                            '    td2.Controls.Add(val)
-                            'End If
-
-                            'todo: aggiungere tooltip in altro modo
-                            'If oInfo.FormItemTitle.Trim <> "" Then
-                            '    ed.ToolTip = oInfo.FormItemTitle.Trim
-                            'End If
-                            '01.00.06 pattern: not working for texteditor
 
                         Case FormItem.FileUpload
                             'File Upload
@@ -631,202 +585,109 @@ Namespace ODS.DNN.Modules.Form
 
                     End Select
 
-                    ''Create edit pencil
-                    'Dim lblEdit As New Label
-                    'lblEdit.Text = "<a href=" & MyBase.EditUrl("FormItemID", CStr(oInfo.FormItemID)) & "><img src=""" & ResolveUrl("~/images/edit.gif") & """ border=0></a>"
-
-                    'If oInfo.FormType = FormItem.Label Then
-                    '    'td2.ColSpan = 2
-                    '    'td2.Attributes.Add("class", "dnnTooltip")
-                    '    'tr.Cells.Add(td2)
-                    '    div.Attributes("class") &= " dnnTooltip"
-
-                    '    'add edit pencil
-                    '    If IsEditable Then
-                    '        'td2.Controls.AddAt(0, lblEdit)
-                    '        div.Controls.AddAt(0, lblEdit)
-                    '    End If
-                    'Else
-
-                    '    'td = New HtmlTableCell
-                    '    'td.Attributes.Add("class", "dnnTooltip")
-                    '    'td2.Attributes.Add("class", "dnnFormItem")
-                    '    div.Attributes("class") &= " dnnTooltip"
-
-                    '    'add edit pencil
-                    '    If IsEditable Then
-                    '        'td.Controls.Add(lblEdit)
-                    '        div.Controls.Add(lblEdit)
-                    '    End If
-
-                    '    'create label
-                    '    Dim lbl As New Label
-                    '    '01.00.02: custom css class for labels
-                    '    Dim sCustomLabelClass As String = oInfo.FormLabelClass 'CType(Settings("CSSLabels"), String)
-                    '    If sCustomLabelClass <> String.Empty Then
-                    '        'label with custom css class
-                    '        lbl.CssClass = sCustomLabelClass
-                    '        lbl.Text = oInfo.FormLabel
-                    '    Else
-                    '        'default: use resx
-                    '        '<span class=FormLabel>[FormLabel]:</span>
-                    '        lbl.Text = Replace(Localization.GetString("FormLabel.Text", LocalResourceFile), "[FormLabel]", oInfo.FormLabel)
-                    '    End If
-
-                    '    'add required-field label
-                    '    '01.00.04: missing mandatory icon for Checkbox fields
-                    '    '01.00.06: suppressed, now use dnnFormRequired css class
-                    '    'If oInfo.FormType = FormItem.TextArea Or oInfo.FormType = FormItem.TextBox Or oInfo.FormType = FormItem.MultipleSelect Or oInfo.FormType = FormItem.DropDownList Or oInfo.FormType = FormItem.DNNRichTextEditControl Or oInfo.FormType = FormItem.RadioButtonList Or oInfo.FormType = FormItem.FileUpload Or oInfo.FormType = FormItem.Checkbox Then
-                    '    '    If Not oInfo.Optional Then
-                    '    '        lbl.Text = lbl.Text & "&nbsp;" & IMGREQUIRED
-                    '    '    End If
-                    '    'End If
-
-                    '    '01.00.06: suppressed, put styles in css
-                    '    'td.Style.Add("white-space", "nowrap") ' don't wrap the labels column
-
-
-                    '    'tooltip
-                    '    If oInfo.FormItemTitle.Trim <> "" Then
-                    '        lbl.ToolTip = oInfo.FormItemTitle
-                    '    End If
-
-                    '    'add label to cell
-                    '    'td.Controls.Add(lbl)
-                    '    'div.Controls.Add(lbl)
-
-
-                    '    'add cells to row
-                    '    'tr.Cells.Add(td)
-                    '    'tr.Cells.Add(td2)
-                    'End If
-
-                    'Table1.Rows.Add(tr)
                 Next
 
-                'captcha
-                If Settings("Captcha") = True Then
+                    'captcha
+                    If Settings("Captcha") = True Then
 
-                    Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
-                    Dim captcha As DotNetNuke.UI.WebControls.CaptchaControl = New DotNetNuke.UI.WebControls.CaptchaControl
-                    captcha.ID = "captcha_" & Me.ModuleId
-                    captcha.Text = Localization.GetString("CaptchaText", Me.LocalResourceFile)
-                    captcha.ToolTip = Localization.GetString("CaptchaText", Me.LocalResourceFile)
-                    'captcha.ErrorMessage = "<div style='float:left' class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
-                    captcha.ErrorMessage = "<div class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+                        Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
+                        Dim captcha As DotNetNuke.UI.WebControls.CaptchaControl = New DotNetNuke.UI.WebControls.CaptchaControl
+                        captcha.ID = "captcha_" & Me.ModuleId
+                        captcha.Text = Localization.GetString("CaptchaText", Me.LocalResourceFile)
+                        captcha.ToolTip = Localization.GetString("CaptchaText", Me.LocalResourceFile)
+                        'captcha.ErrorMessage = "<div style='float:left' class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+                        captcha.ErrorMessage = "<div class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
 
-                    'captcha.CssClass = "dnnFormRequired"
+                        '01.00.02: number of captcha characters (default 6)
+                        Dim chars As Integer = 6
+                        Try
+                            chars = Integer.Parse(Settings("CaptchaLength"))
+                        Catch ex As Exception
+                        End Try
+                        captcha.CaptchaLength = chars
 
-                    '01.00.02: custom class for captcha messages
+                        '01.00.02: captcha dimensions
+                        Select Case Settings("CaptchaMode")
+                            Case "2" 'large
+                                captcha.CaptchaWidth = 300
+                                captcha.CaptchaHeight = 150
 
-                    'If sCSSCaptcha <> String.Empty Then
-                    '    captcha.CssClass = sCSSCaptcha
-                    '    'captcha.TextBoxStyle.CssClass = sCSSCaptcha
+                            Case "1" 'medium
+                                captcha.CaptchaWidth = 200
+                                captcha.CaptchaHeight = 100
 
-                    '    '01.00.06: suppressed default classes
-                    '    'Else
-                    '    '    captcha.CssClass = "NormalRed"
-                    'End If
+                            Case Else
+                                'little (default)
+                                captcha.CaptchaWidth = 150
+                                captcha.CaptchaHeight = 80
+                        End Select
 
-                    '01.00.02: number of captcha characters (default 6)
-                    Dim chars As Integer = 6
-                    Try
-                        chars = Integer.Parse(Settings("CaptchaLength"))
-                    Catch ex As Exception
-                    End Try
-                    captcha.CaptchaLength = chars
+                        '01.00.02: use only numbers as characters for Captcha
+                        Dim numOnly As Boolean = CType(Settings("CaptchaNumbers"), Boolean)
+                        If numOnly = True Then captcha.CaptchaChars = "01234567890"
 
-                    '01.00.02: captcha dimensions
-                    Select Case Settings("CaptchaMode")
-                        Case "2" 'large
-                            captcha.CaptchaWidth = 300
-                            captcha.CaptchaHeight = 150
+                        Dim divCaptcha As New HtmlGenericControl("div")
+                        divCaptcha.Attributes("class") = "dnnFormItem" 'dnnTooltip
+                        Dim lblc As New Label
+                        lblc.CssClass = "dnnFormLabel"
+                        lblc.Text = Localization.GetString("Captcha.Text", LocalResourceFile)
+                        lblc.ToolTip = lblc.Text
 
-                        Case "1" 'medium
-                            captcha.CaptchaWidth = 200
-                            captcha.CaptchaHeight = 100
-
-                        Case Else
-                            'little (default)
-                            captcha.CaptchaWidth = 150
-                            captcha.CaptchaHeight = 80
-                    End Select
-
-                    '01.00.02: use only numbers as characters for Captcha
-                    Dim numOnly As Boolean = CType(Settings("CaptchaNumbers"), Boolean)
-                    If numOnly = True Then captcha.CaptchaChars = "01234567890"
-
-                    'Dim trc As HtmlTableRow = New HtmlTableRow
-                    'Dim tdc As New HtmlTableCell(), tdc2 As New HtmlTableCell()
-                    'tdc.Attributes.Add("class", "dnnTooltip")
-                    'tdc2.Attributes.Add("class", "dnnFormItem")
-
-                    Dim divCaptcha As New HtmlGenericControl("div")
-                    divCaptcha.Attributes("class") = "dnnFormItem" 'dnnTooltip
-                    Dim lblc As New Label
-                    lblc.CssClass = "dnnFormLabel"
-                    lblc.Text = Localization.GetString("Captcha.Text", LocalResourceFile)
-                    lblc.ToolTip = lblc.Text
-
-                    divCaptcha.Controls.Add(lblc)
-                    divCaptcha.Controls.Add(captcha)
-                    fieldset.Controls.Add(divCaptcha)
-                End If
-
-                'validation summary 
-                If hasValidators = True AndAlso CType(Settings("chkValSum"), Boolean) = True Then
-                    'Dim trval As New HtmlTableRow
-                    'Dim tdval As New HtmlTableCell
-                    Dim vs As New ValidationSummary
-                    vs.ValidationGroup = "ods" & Me.ModuleId
-                    vs.DisplayMode = ValidationSummaryDisplayMode.BulletList
-                    vs.HeaderText = Localization.GetString("ValidationSummaryTitle", LocalResourceFile)
-                    vs.CssClass = "dnnFormValidationSummary " ' "ValidationSummary"
-                    'vs.EnableClientScript = true
-                    'position: top or bottom
-                    If Settings("posValSum") = "0" Then
-                        fieldset.Controls.AddAt(0, vs)
-                    Else
-                        fieldset.Controls.Add(vs)
+                        divCaptcha.Controls.Add(lblc)
+                        divCaptcha.Controls.Add(captcha)
+                        fieldset.Controls.Add(divCaptcha)
                     End If
-                End If
 
-                'action buttons (submit, reset)
-                Dim ulActions As New HtmlGenericControl("ul")
-                ulActions.Attributes("class") = "dnnActions dnnClear"
-                formDIV.Controls.Add(ulActions)
+                    'validation summary 
+                    If hasValidators = True AndAlso CType(Settings("chkValSum"), Boolean) = True Then
+                    Dim vs As New ValidationSummary
+                        vs.ValidationGroup = "ods" & Me.ModuleId
+                        vs.DisplayMode = ValidationSummaryDisplayMode.BulletList
+                        vs.HeaderText = Localization.GetString("ValidationSummaryTitle", LocalResourceFile)
+                        vs.CssClass = "dnnFormValidationSummary " ' "ValidationSummary"
+                        'vs.EnableClientScript = true
+                        'position: top or bottom
+                        If Settings("posValSum") = "0" Then
+                            fieldset.Controls.AddAt(0, vs)
+                        Else
+                            fieldset.Controls.Add(vs)
+                        End If
+                    End If
+
+                    'action buttons (submit, reset)
+                    Dim ulActions As New HtmlGenericControl("ul")
+                    ulActions.Attributes("class") = "dnnActions dnnClear"
+                    formDIV.Controls.Add(ulActions)
 
                 Dim liSubmit As New HtmlGenericControl("li")
-                aSubmit.CssClass = sClass
                 liSubmit.Controls.Add(aSubmit)
                 ulActions.Controls.Add(liSubmit)
 
-                'hide reset button?
-                If CType(Settings("chkHideReset"), Boolean) = True Then
-                    aReset.Visible = False
-                Else
-                    Dim liReset As New HtmlGenericControl("li")
-                    aReset.CssClass = "dnnSecondaryAction"
-                    liReset.Controls.Add(aReset)
-                    ulActions.Controls.Add(liReset)
-                End If
-
-                formDIV.Controls.Add(ulActions)
-
-                ' End If
-
-
-                ' FREE FORM SUBMISION
-                Dim odsModuleID As String = Request("odsid") & String.Empty
-                If odsModuleID = Me.ModuleId.ToString Then
-                    'filter submissions for this form only, so that we can have multiple forms on a page and let them be used for free forms posts
-                    Dim odsAction As String = Request("odsaction") & String.Empty
-                    ' odsaction submit
-                    If odsAction.ToLower = "submit" Then
-                        Page.Validate()
-                        cmdSubmit_Click(Nothing, EventArgs.Empty)
+                    'hide reset button?
+                    If CType(Settings("chkHideReset"), Boolean) = True Then
+                        aReset.Visible = False
+                    Else
+                        Dim liReset As New HtmlGenericControl("li")
+                        liReset.Controls.Add(aReset)
+                        ulActions.Controls.Add(liReset)
                     End If
-                End If
+
+                    formDIV.Controls.Add(ulActions)
+
+                    ' End If
+
+
+                    ' FREE FORM SUBMISION
+                    Dim odsModuleID As String = Request("odsid") & String.Empty
+                    If odsModuleID = Me.ModuleId.ToString Then
+                        'filter submissions for this form only, so that we can have multiple forms on a page and let them be used for free forms posts
+                        Dim odsAction As String = Request("odsaction") & String.Empty
+                        ' odsaction submit
+                        If odsAction.ToLower = "submit" Then
+                            Page.Validate()
+                            cmdSubmit_Click(Nothing, EventArgs.Empty)
+                        End If
+                    End If
 
 
             Catch ex As Exception
@@ -1115,7 +976,7 @@ Namespace ODS.DNN.Modules.Form
 
                     'Send email
                     Try
-                        LoggerSource.Instance.GetLogger(libName).Debug("Sending email to " & szEmails)
+                        LoggerSource.Instance.GetLogger(libName).Debug("USER mode: Sending email to " & szEmails)
                         'plain text
                         'DotNetNuke.Services.Mail.Mail.SendMail(Split(szEmails, ";")(0), szEmails, "", szSubject, sz, "", "", "", "", "", "")
                         'html
@@ -1147,6 +1008,7 @@ Namespace ODS.DNN.Modules.Form
 
                     'Send email
                     Try
+                        LoggerSource.Instance.GetLogger(libName).Debug("MAILTO mode: Sending email to " & szEmails)
                         'plain text
                         'DotNetNuke.Services.Mail.Mail.SendMail(Split(szEmails, ";")(0), szEmails, "", szSubject, sz, "", "", "", "", "", "")
                         'html
@@ -1300,10 +1162,6 @@ Namespace ODS.DNN.Modules.Form
 
         Public Sub MyLog(ByVal logMessage As String)
             LoggerSource.Instance.GetLogger(libName).Debug(logMessage)
-            'Dim w As IO.StreamWriter = IO.File.AppendText(MapPath("~/DesktopModules/Form/ODSForm.log"))
-            'w.WriteLine("{0} {1} :{2}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString(), logMessage)
-            'w.Flush()
-            'w.Close()
         End Sub
 
         Private Function DNNTokenReplace(m As Match) As String

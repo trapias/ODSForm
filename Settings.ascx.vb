@@ -96,9 +96,6 @@ Namespace ODS.DNN.Modules.Form
                 If locale = "" Then locale = System.Threading.Thread.CurrentThread.CurrentCulture.ToString
                 If CType(Settings("EnableLocalization"), Boolean) = False Then locale = "" ' culture independent
 
-                ' Update TabModuleSettings
-                'objModules.UpdateTabModuleSetting(TabModuleId, "settingname1", "value")
-
                 ' Update ModuleSettings
                 objModules.UpdateModuleSetting(ModuleId, "tbEmail", tbEmail.Text)
 

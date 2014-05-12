@@ -1,10 +1,10 @@
 ﻿<%@ Control Language="VB" AutoEventWireup="false" CodeFile="SubmissionManager.ascx.vb" Inherits="ODS.DNN.Modules.Form.SubmissionManager" %>
-<script src="<%=ResolveURL("~/DesktopModules/Form/js/DataTables-1.9.2/media/js/jquery.dataTables.min.js")%>" type="text/javascript"></script>
-<script src="<%=ResolveURL("~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/js/TableTools.min.js")%>" type="text/javascript"></script>
-<link href="<%=ResolveURL("~/DesktopModules/Form/js/DataTables-1.9.2/media/css/jquery.dataTables.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%=ResolveURL("~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/css/TableTools_JUI.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%=ResolveURL("~/DesktopModules/Form/js/ui/css/smoothness/jquery-ui-1.8.21.custom.css")%>" rel="stylesheet" type="text/css" />
-<script src="<%=ResolveURL("~/DesktopModules/Form/js/ui/jquery-ui-1.8.21.custom.min.js")%>" type="text/javascript"></script>
+<%@ Register TagPrefix="dnn" Namespace="DotNetNuke.Web.Client.ClientResourceManagement" Assembly="DotNetNuke.Web.Client" %>
+<dnn:DnnCssInclude ID="DnnCssInclude1" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/media/css/jquery.dataTables.css"></dnn:DnnCssInclude>
+<dnn:DnnCssInclude ID="DnnCssInclude2" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/css/TableTools_JUI.css"></dnn:DnnCssInclude>
+<dnn:DnnCssInclude ID="DnnCssInclude3" runat="server" FilePath="~/DesktopModules/Form/js/ui/css/smoothness/jquery-ui-1.8.21.custom.css"></dnn:DnnCssInclude>
+<dnn:DnnJsInclude ID="DnnJsInclude5" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/media/js/jquery.dataTables.min.js"></dnn:DnnJsInclude>
+<dnn:DnnJsInclude ID="DnnJsInclude1" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/js/TableTools.min.js"></dnn:DnnJsInclude>
 <script type="text/javascript">
     $(function () {
         $('#<%=submissions.ClientID %>').dataTable({
