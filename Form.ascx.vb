@@ -37,6 +37,8 @@ Namespace ODS.DNN.Modules.Form
                 JavaScript.RequestRegistration(CommonJs.jQueryUI)
                 JavaScript.RequestRegistration(CommonJs.DnnPlugins)
 
+            End If
+			
                 LocalizeForm = CType(Settings("EnableLocalization"), Boolean)
                 If LocalizeForm Then cultureCode = System.Threading.Thread.CurrentThread.CurrentCulture.ToString
 
@@ -67,8 +69,6 @@ Namespace ODS.DNN.Modules.Form
                     Me.ModuleConfiguration.ModuleTitle = Localization.GetString("ContactUser", LocalResourceFile) & " " & Request("mailto")
                 End If
 
-
-            End If
         End Sub
 
         Private Function ValidateMailto() As Boolean
