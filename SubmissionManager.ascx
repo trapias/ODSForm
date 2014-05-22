@@ -1,10 +1,10 @@
 ﻿<%@ Control Language="VB" AutoEventWireup="false" CodeFile="SubmissionManager.ascx.vb" Inherits="ODS.DNN.Modules.Form.SubmissionManager" %>
 <%@ Register TagPrefix="dnn" Namespace="DotNetNuke.Web.Client.ClientResourceManagement" Assembly="DotNetNuke.Web.Client" %>
-<dnn:DnnCssInclude ID="DnnCssInclude1" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/media/css/jquery.dataTables.css"></dnn:DnnCssInclude>
-<dnn:DnnCssInclude ID="DnnCssInclude2" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/css/TableTools_JUI.css"></dnn:DnnCssInclude>
-<dnn:DnnCssInclude ID="DnnCssInclude3" runat="server" FilePath="~/DesktopModules/Form/js/ui/css/smoothness/jquery-ui-1.8.21.custom.css"></dnn:DnnCssInclude>
-<dnn:DnnJsInclude ID="DnnJsInclude5" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/media/js/jquery.dataTables.min.js"></dnn:DnnJsInclude>
-<dnn:DnnJsInclude ID="DnnJsInclude1" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/js/TableTools.min.js"></dnn:DnnJsInclude>
+<dnn:DnnCssInclude ID="DnnCssInclude1" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/media/css/jquery.dataTables.css" Priority="150"></dnn:DnnCssInclude>
+<dnn:DnnCssInclude ID="DnnCssInclude2" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/css/TableTools_JUI.css" Priority="151"></dnn:DnnCssInclude>
+<dnn:DnnCssInclude ID="DnnCssInclude3" runat="server" FilePath="~/DesktopModules/Form/js/ui/css/smoothness/jquery-ui-1.8.21.custom.css" Priority="152"></dnn:DnnCssInclude>
+<dnn:DnnJsInclude ID="DnnJsInclude5" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/media/js/jquery.dataTables.min.js" Priority="150"></dnn:DnnJsInclude>
+<dnn:DnnJsInclude ID="DnnJsInclude1" runat="server" FilePath="~/DesktopModules/Form/js/DataTables-1.9.2/extras/TableTools/media/js/TableTools.min.js" Priority="151"></dnn:DnnJsInclude>
 <script type="text/javascript">
     $(function () {
         $('#<%=submissions.ClientID %>').dataTable({
@@ -25,27 +25,27 @@
                    "mDataProp": "SubmissionXML", sTitle: "Submission",
                    "fnRender": function (o, val) {
                        if (val == undefined || val == "")
-                return "";
-              var x =  $.parseXML(val);
-              $x = $(x);
-              var sentto = $x.find("SentToUser").text();
-                       var ss = "";
-              var clt = "";
-                       $x.find("FormItem").each(function ()
-              {
-                clt = $(this).attr("Culture");
-                ss +=  "<b>" + $(this).attr("FormLabel") + ":</b> " + $(this).text() + "<br />";
-              });
+                         return "";
+                    var x =  $.parseXML(val);
+                    $x = $(x);
+                    var sentto = $x.find("SentToUser").text();
+                    var ss = "", clt = "";
+                    $x.find("FormItem").each(function ()
+                    {
+                    clt = $(this).attr("Culture");
+                    ss +=  "<b>" + $(this).attr("FormLabel") + ":</b> " + $(this).text() + "<br />";
+                    });
 
-              if (sentto == "") {
-                           if (clt != undefined && clt!='')
-                  return "<b>Locale:</b> " + clt + "<br/>" + ss;
-                           else return ss;
-              }
-              else {
-                  return "<b>Sent to:</b> " + sentto + "<br/>" + "<b>Locale:</b> " + clt + "<br/>" + ss;
-              }
-                   }
+                    if (sentto == "") {
+                        if (clt != undefined && clt!='')
+                            return "<b>Locale:</b> " + clt + "<br/>" + ss;
+                        else
+                            return ss;
+                    }
+                    else {
+                        return "<b>Sent to:</b> " + sentto + "<br/>" + "<b>Locale:</b> " + clt + "<br/>" + ss;
+                    }
+                }
                }
                ],
             "aaSorting": [[0, "desc"]]
