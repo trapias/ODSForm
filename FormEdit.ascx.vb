@@ -8,6 +8,7 @@ Imports System.Collections.Generic
 Imports System.Reflection
 Imports DotNetNuke.Services.FileSystem
 Imports DotNetNuke.Instrumentation
+Imports DotNetNuke.Framework.JavaScriptLibraries
 
 Namespace ODS.DNN.Modules.Form
 
@@ -18,15 +19,16 @@ Namespace ODS.DNN.Modules.Form
         Private FormItemID As Integer
         Private LocalizeForm As Boolean = False
         Private cultureCode As String = Nothing
+        Private libName As String = "ODS.DNN.Modules.Form.FormEdit"
 #End Region
 
 #Region "Event Handlers"
 
         Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
             If Not Page.IsPostBack Then
-                DotNetNuke.Framework.jQuery.RequestRegistration()
-                DotNetNuke.Framework.jQuery.RequestUIRegistration()
-                DotNetNuke.Framework.jQuery.RequestDnnPluginsRegistration()
+                JavaScript.RequestRegistration(CommonJs.jQuery)
+                JavaScript.RequestRegistration(CommonJs.jQueryUI)
+                JavaScript.RequestRegistration(CommonJs.DnnPlugins)
             End If
             LocalizeForm = CType(Settings("EnableLocalization"), Boolean)
             If LocalizeForm Then cultureCode = System.Threading.Thread.CurrentThread.CurrentCulture.ToString
@@ -108,6 +110,22 @@ Namespace ODS.DNN.Modules.Form
                             chkAllowValueOverride.Checked = objForm.AllowValueOverride
                             chkAllowValueOverride.Text = Localization.GetString("chkAllowValueOverride", Me.LocalResourceFile) & "dnn_ctr" & Me.ModuleId & "_Form_ctl_" & FormItemID
 
+                            Select Case objForm.FormType
+                                Case FormItem.MultipleSelect
+                                    '01.00.08 split view into columns
+                                    'CustomData contains ddlMultipleSelectCol=nCols
+                                    If objForm.CustomData <> String.Empty Then
+                                        Dim rv() As String = objForm.CustomData.Split(";")
+                                        Dim nv() As String = rv(0).Split("=")
+                                        Select Case nv(0)
+                                            Case "ddlMultipleSelectCol"
+                                                'LoggerSource.Instance.GetLogger(libName).Debug(nv(0) & " = " & nv(1))
+                                                Dim iCols As Integer = Integer.Parse(nv(1))
+                                                ddlMultipleSelectCol.SelectedValue = iCols
+                                        End Select
+                                    End If
+                            End Select
+
 
                         Else ' security violation attempt to access item not related to this Module
                             Response.Redirect(NavigateURL(), True)
@@ -179,7 +197,18 @@ Namespace ODS.DNN.Modules.Form
                     '01.00.05
                     objForm.FormItemTitle = txtFormItemTitle.Text
                     objForm.FormLabelClass = txtFormLabelClass.Text ' custom css class for label
-                    
+
+                    '01.00.08 split multiselect in columns
+                    'CustomData contains ddlMultipleSelectCol=nCols
+                    Select Case objForm.FormType
+
+                        Case FormItem.MultipleSelect
+                            objForm.CustomData = "ddlMultipleSelectCol=" & ddlMultipleSelectCol.SelectedValue & ";"
+
+                        Case Else
+                            objForm.CustomData = Null.NullString
+                    End Select
+
                     Dim objCtlForm As New FormItemController
                     If Null.IsNull(FormItemID) Then
                         objForm.Culture = cultureCode
@@ -265,6 +294,7 @@ Namespace ODS.DNN.Modules.Form
             trFilePath.Visible = False '01.00.03: default is hidden
             trCustomRegex.Visible = False
             trAllowValueOverride.Visible = False
+            Me.trMultipleSelectCol.Visible = False
 
             Select Case CInt(Me.ddlFormTypes.SelectedValue)
                 'Checkbox
@@ -298,6 +328,7 @@ Namespace ODS.DNN.Modules.Form
                     trHeight.Visible = False
                     Me.trFormValues.Visible = True
                     trAllowValueOverride.Visible = True
+                    Me.trMultipleSelectCol.Visible = True
                     'TextArea
                 Case FormItem.TextArea
                     Me.trSelectedValues.Visible = False

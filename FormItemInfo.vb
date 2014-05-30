@@ -23,6 +23,7 @@ Namespace ODS.DNN.Modules.Form.Business
         Dim _FormItemTitle As String
         Dim _culture As String
         Dim _AllowValueOverride As Boolean
+        Dim _custom As String
 #End Region
 
 #Region "Constructors"
@@ -202,6 +203,21 @@ Namespace ODS.DNN.Modules.Form.Business
             End Set
         End Property
 
+        ''' <summary>
+        ''' Store custom values for field types
+        ''' e.g. ddlMultipleSelectColumns.columns=2
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Property CustomData() As String
+            Get
+                Return _custom
+            End Get
+            Set(ByVal Value As String)
+                _custom = Value
+            End Set
+        End Property
 #End Region
 
 #Region "Methods"

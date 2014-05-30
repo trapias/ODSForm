@@ -1,0 +1,182 @@
+﻿ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ADD [CustomData] [nvarchar](512) NULL;
+GO
+
+
+ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemAdd]
+	@ModuleID int,
+	@PortalID int,
+	@FormType int,
+	@FormValue nvarchar(MAX),
+	@FormSelectedValue nvarchar(MAX),
+	@FormLabel nvarchar(100),
+	@SortValue int,
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass nvarchar(255),
+	@CustomRegex nvarchar(512)=null,
+	@FormItemTitle nvarchar(255)=null,
+	@FormLabelClass nvarchar(255)=null,
+	@CultureCode nvarchar(5)=null,
+	@AllowValueOverride bit=0,
+	@Custom nvarchar(512)=null
+AS
+	SELECT @SortValue=Min(SortValue)-1 FROM ODSFormItem
+
+	IF @SortValue Is Null 
+		Select @SortValue=1
+
+INSERT INTO ODSFormItem (
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass],
+	[CustomRegex],
+	[FormItemTitle],
+	[FormLabelClass],
+	[CultureCode],
+	[AllowValueOverride],
+	[CustomData]
+) VALUES (
+	@ModuleID,
+	@PortalID,
+	@FormType,
+	@FormValue,
+	@FormSelectedValue,
+	@FormLabel,
+	@SortValue,
+	@Optional,
+	@Width,
+	@Height,
+	@CSSClass,
+	@CustomRegex,
+	@FormItemTitle,
+	@FormLabelClass,
+	@CultureCode,
+	@AllowValueOverride,
+	@Custom
+)
+
+select SCOPE_IDENTITY()
+
+
+GO
+
+
+
+ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemGet]
+	@FormItemID int
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass],
+	[CustomRegex],
+	[FormItemTitle],
+	[FormLabelClass],
+	[CultureCode] as [Culture],
+	[AllowValueOverride],
+	[CustomData]
+FROM ODSFormItem
+WHERE
+	[FormItemID] = @FormItemID
+
+
+GO
+
+
+
+ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemList]
+	@PortalID int,
+	@ModuleID int,
+	@CultureCode varchar(5)=null
+	
+AS
+
+SELECT
+	[FormItemID],
+	[ModuleID],
+	[PortalID],
+	[FormType],
+	[FormValue],
+	[FormSelectedValue],
+	[FormLabel],
+	[SortValue],
+	[Optional],
+	[Width],
+	[Height],
+	[CSSClass],
+	[CustomRegex],
+	[FormItemTitle],
+	[FormLabelClass],
+	[CultureCode] as [Culture],
+	[AllowValueOverride],
+	[CustomData]
+FROM ODSFormItem
+WHERE ModuleID=@ModuleID AND PortalID=@PortalID
+and (@CultureCode is null or CultureCode=@CultureCode)
+ORDER BY SortValue DESC
+
+GO
+
+
+ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemUpdate]
+	@FormItemID int, 
+	@ModuleID int, 
+	@PortalID int, 
+	@FormType int, 
+	@FormValue varchar(8000), 
+	@FormSelectedValue varchar(8000), 
+	@FormLabel varchar(100),
+	@Optional bit,
+	@Width int,
+	@Height int,
+	@CSSClass varchar(255),
+	@CustomRegex varchar(512)=null,
+	@FormItemTitle varchar(255)=null,
+	@FormLabelClass varchar(255)=null,
+	@CultureCode nvarchar(5)=null,
+	@AllowValueOverride bit=0,
+	@Custom nvarchar(512)=null
+AS
+
+UPDATE ODSFormItem SET
+	[ModuleID] = @ModuleID,
+	[PortalID] = @PortalID,
+	[FormType] = @FormType,
+	[FormValue] = @FormValue,
+	[FormSelectedValue] = @FormSelectedValue,
+	[FormLabel] = @FormLabel,
+	[Optional] = @Optional,
+	[Width] = @Width,
+	[Height] = @Height,
+	[CSSClass] = @CSSClass,
+	[CustomRegex] = @CustomRegex,
+	[FormItemTitle] = @FormItemTitle,
+	[FormLabelClass] = @FormLabelClass,
+	--[CultureCode] = @CultureCode, -- avoid updating culture: issues with ifinity friendlyurl to be solved
+	[AllowValueOverride] = @AllowValueOverride,
+	[CustomData] = @Custom
+WHERE
+	[FormItemID] = @FormItemID
+
+
+GO
+

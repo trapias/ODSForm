@@ -24,13 +24,13 @@ Namespace ODS.DNN.Modules.Form.Business
 
         Public Function Add(ByVal objODSFormItem As FormItemInfo) As Integer
 
-            Return CType(DataProvider.Instance().AddODSFormItem(objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.SortValue, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride), Integer)
+            Return CType(DataProvider.Instance().AddODSFormItem(objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.SortValue, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride, objODSFormItem.CustomData), Integer)
 
         End Function
 
         Public Sub Update(ByVal objODSFormItem As FormItemInfo)
 
-            DataProvider.Instance().UpdateODSFormItem(objODSFormItem.FormItemID, objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride)
+            DataProvider.Instance().UpdateODSFormItem(objODSFormItem.FormItemID, objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride, objODSFormItem.CustomData)
 
         End Sub
 

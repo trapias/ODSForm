@@ -252,4 +252,10 @@
   <data name="HiddenField.Text" xml:space="preserve">
     <value>Hidden Field</value>
   </data>
+  <data name="lblMultipleSelectCol.Help" xml:space="preserve">
+    <value>Split checkboxes in n columns</value>
+  </data>
+  <data name="lblMultipleSelectCol.Text" xml:space="preserve">
+    <value>Split columns</value>
+  </data>
 </root>

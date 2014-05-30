@@ -11,13 +11,13 @@ Namespace ODS.DNN.Modules.Form
     Partial Class json
         Inherits DotNetNuke.Framework.CDefault
 
-        Public Sub MyLog(ByVal logMessage As String)
-            DnnLog.Debug(logMessage)
-            'Dim w As IO.StreamWriter = IO.File.AppendText(MapPath("~/DesktopModules/Form/json.log"))
-            'w.WriteLine("{0} {1} :{2}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString(), logMessage)
-            'w.Flush()
-            'w.Close()
-        End Sub
+        'Public Sub MyLog(ByVal logMessage As String)
+        '    DnnLog.Debug(logMessage)
+        '    'Dim w As IO.StreamWriter = IO.File.AppendText(MapPath("~/DesktopModules/Form/json.log"))
+        '    'w.WriteLine("{0} {1} :{2}", DateTime.Now.ToLongTimeString(), DateTime.Now.ToLongDateString(), logMessage)
+        '    'w.Flush()
+        '    'w.Close()
+        'End Sub
 
         Protected Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
             Try

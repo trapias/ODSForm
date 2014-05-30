@@ -32,11 +32,9 @@ Namespace ODS.DNN.Modules.Form
         Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
             If Not Page.IsPostBack Then
-
                 JavaScript.RequestRegistration(CommonJs.jQuery)
                 JavaScript.RequestRegistration(CommonJs.jQueryUI)
                 JavaScript.RequestRegistration(CommonJs.DnnPlugins)
-
             End If
 			
                 LocalizeForm = CType(Settings("EnableLocalization"), Boolean)
@@ -224,11 +222,11 @@ Namespace ODS.DNN.Modules.Form
                     oInfo = CType(o, FormItemInfo)
 
                     Dim div As New HtmlGenericControl("div")
-                    div.Attributes.Add("class", "dnnFormItem")
+                    div.Attributes.Add("class", "dnnFormItem" & IIf(oInfo.FormLabelClass <> "", " " & oInfo.FormLabelClass, ""))
                     fieldset.Controls.Add(div)
 
                     Dim divLabel As New HtmlGenericControl("span")
-                    divLabel.Attributes("class") = "dnnFormLabel"
+                    divLabel.Attributes("class") = "dnnFormLabel" & IIf(oInfo.FormLabelClass <> "", " " & oInfo.FormLabelClass, "")
                     div.Controls.Add(divLabel)
 
                     'EDIT field link
@@ -424,6 +422,20 @@ Namespace ODS.DNN.Modules.Form
                             'MultipleSelect
                         Case FormItem.MultipleSelect
                             Dim rbl As New CheckBoxList
+
+                            '01.00.08 split view into columns
+                            If oInfo.CustomData <> String.Empty Then
+                                Dim rv() As String = oInfo.CustomData.Split(";")
+                                Dim nv() As String = rv(0).Split("=")
+                                Select Case nv(0)
+                                    Case "ddlMultipleSelectCol"
+                                        Dim iCols As Integer = Integer.Parse(nv(1))
+                                        If iCols > 1 Then
+                                            rbl.RepeatColumns = iCols
+                                        End If
+                                End Select
+                            End If
+
                             rbl.DataSource = Split(oInfo.FormValue & "", ";")
                             rbl.DataBind()
                             rbl.ID = "ctl_" & oInfo.FormItemID

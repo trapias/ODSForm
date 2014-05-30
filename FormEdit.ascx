@@ -29,6 +29,15 @@
                 <asp:ListItem Value="10">Hidden Field</asp:ListItem>
 			</asp:DropDownList>
      </div>
+     <div class="dnnFormItem" id="trMultipleSelectCol" runat="server">
+         <dnn:label id="lblMultipleSelectCol" runat="server" controlname="tbFormLabel" suffix=":" resourcekey="lblMultipleSelectCol" helptext=""></dnn:label>
+         <asp:DropDownList ID="ddlMultipleSelectCol" runat="server">
+             <asp:ListItem Value="0">1 column</asp:ListItem>
+             <asp:ListItem Value="2">2 columns</asp:ListItem>
+             <asp:ListItem Value="3">3 columns</asp:ListItem>
+             <asp:ListItem Value="4">4 columns</asp:ListItem>
+         </asp:DropDownList>
+     </div>
      <div class="dnnFormItem" id="trFormLabel" runat="server">
          <dnn:label id="plFormLabel" runat="server" controlname="tbFormLabel" suffix=":" resourcekey="plFormLabel" helptext=""></dnn:label>
          <asp:TextBox Runat="server" ID="tbFormLabel" MaxLength="255" />
