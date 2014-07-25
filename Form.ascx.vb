@@ -307,13 +307,20 @@ Namespace ODS.DNN.Modules.Form
 
                     End If
 
+                    'DNN token-replace parser
+                    'cfr http://www.dnnsoftware.com/wiki/Page/Tokens
+                    'es: [Tab:TabName]
+                    Dim dnnsafetokenreplace As New Regex("(\[([^: ]*):([^:/ ]*)\])", RegexOptions.IgnoreCase Or RegexOptions.Multiline Or RegexOptions.IgnorePatternWhitespace Or RegexOptions.Compiled)
+                    Dim str As New MatchEvaluator(AddressOf DNNTokenReplace)
+
                     'Create controls by type
                     Select Case oInfo.FormType
 
                         'TextBox
                         Case FormItem.TextBox
                             Dim tb As TextBox = New TextBox
-                            tb.Text = oInfo.FormValue & ""
+                            'tb.Text = oInfo.FormValue & ""
+                            tb.Text = dnnsafetokenreplace.Replace(oInfo.FormValue & "", str)
                             tb.ID = "ctl_" & oInfo.FormItemID
                             '01.00.02: custom css class for fields
                             tb.CssClass = IIf(oInfo.CSSClass = String.Empty, "FormTextBox", oInfo.CSSClass)
@@ -347,7 +354,9 @@ Namespace ODS.DNN.Modules.Form
                             'TextArea
                         Case FormItem.TextArea
                             Dim tb As TextBox = New TextBox
-                            tb.Text = oInfo.FormValue & ""
+                            'tb.Text = oInfo.FormValue & ""
+                            tb.Text = dnnsafetokenreplace.Replace(oInfo.FormValue & "", str)
+
                             tb.TextMode = TextBoxMode.MultiLine
                             If Not oInfo.Width = Null.NullInteger Then
                                 tb.Columns = oInfo.Width
@@ -547,7 +556,8 @@ Namespace ODS.DNN.Modules.Form
 
                             Dim ed As New DotNetNuke.UI.WebControls.DNNRichTextEditControl()  'DotNetNuke.Web.UI.WebControls.DnnEditor()
                             ed.ID = "ctl_" & oInfo.FormItemID
-                            ed.Value = oInfo.FormValue & ""
+                            'ed.Value = oInfo.FormValue & ""
+                            ed.Value = dnnsafetokenreplace.Replace(oInfo.FormValue & "", str)
 
                             'ed.Content = oInfo.FormValue & ""
 
@@ -581,7 +591,8 @@ Namespace ODS.DNN.Modules.Form
 
                         Case FormItem.HiddenField
                             Dim tb As HiddenField = New HiddenField
-                            tb.Value = oInfo.FormValue & ""
+                            'tb.Value = oInfo.FormValue & ""
+                            tb.Value = dnnsafetokenreplace.Replace(oInfo.FormValue & "", str)
 
                             tb.ID = "ctl_" & oInfo.FormItemID
                             div.Controls.Add(tb)
@@ -599,56 +610,68 @@ Namespace ODS.DNN.Modules.Form
 
                 Next
 
-                    'captcha
-                    If Settings("Captcha") = True Then
+                'captcha
+                If Settings("Captcha") = True Then
 
-                        Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
-                        Dim captcha As DotNetNuke.UI.WebControls.CaptchaControl = New DotNetNuke.UI.WebControls.CaptchaControl
-                        captcha.ID = "captcha_" & Me.ModuleId
-                        captcha.Text = Localization.GetString("CaptchaText", Me.LocalResourceFile)
-                        captcha.ToolTip = Localization.GetString("CaptchaText", Me.LocalResourceFile)
-                        'captcha.ErrorMessage = "<div style='float:left' class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
-                        captcha.ErrorMessage = "<div class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+                    Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
+                    Dim captcha As New MSCaptcha.CaptchaControl()
 
-                        '01.00.02: number of captcha characters (default 6)
-                        Dim chars As Integer = 6
-                        Try
-                            chars = Integer.Parse(Settings("CaptchaLength"))
-                        Catch ex As Exception
-                        End Try
-                        captcha.CaptchaLength = chars
 
-                        '01.00.02: captcha dimensions
-                        Select Case Settings("CaptchaMode")
-                            Case "2" 'large
-                                captcha.CaptchaWidth = 300
-                                captcha.CaptchaHeight = 150
 
-                            Case "1" 'medium
-                                captcha.CaptchaWidth = 200
-                                captcha.CaptchaHeight = 100
+                    'Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
+                    'Dim captcha As DotNetNuke.UI.WebControls.CaptchaControl = New DotNetNuke.UI.WebControls.CaptchaControl
+                    captcha.ID = "captcha_" & Me.ModuleId
+                    'captcha.Text = Localization.GetString("CaptchaText", Me.LocalResourceFile)
+                    captcha.ToolTip = Localization.GetString("CaptchaText", Me.LocalResourceFile)
+                    'captcha.ErrorMessage = "<div style='float:left' class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+                    'captcha.ErrorMessage = "<div class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+                    captcha.CustomValidatorErrorMessage = "<div class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
 
-                            Case Else
-                                'little (default)
-                                captcha.CaptchaWidth = 150
-                                captcha.CaptchaHeight = 80
-                        End Select
 
-                        '01.00.02: use only numbers as characters for Captcha
-                        Dim numOnly As Boolean = CType(Settings("CaptchaNumbers"), Boolean)
-                        If numOnly = True Then captcha.CaptchaChars = "01234567890"
+                    '01.00.02: number of captcha characters (default 6)
+                    Dim chars As Integer = 6
+                    Try
+                        chars = Integer.Parse(Settings("CaptchaLength"))
+                    Catch ex As Exception
+                    End Try
+                    captcha.CaptchaLength = chars
 
-                        Dim divCaptcha As New HtmlGenericControl("div")
-                        divCaptcha.Attributes("class") = "dnnFormItem" 'dnnTooltip
-                        Dim lblc As New Label
-                        lblc.CssClass = "dnnFormLabel"
-                        lblc.Text = Localization.GetString("Captcha.Text", LocalResourceFile)
-                        lblc.ToolTip = lblc.Text
+                    '01.00.02: captcha dimensions
+                    Select Case Settings("CaptchaMode")
+                        Case "2" 'large
+                            captcha.CaptchaWidth = 350 '300
+                            captcha.CaptchaHeight = 150
 
-                        divCaptcha.Controls.Add(lblc)
-                        divCaptcha.Controls.Add(captcha)
-                        fieldset.Controls.Add(divCaptcha)
-                    End If
+                        Case "1" 'medium
+                            captcha.CaptchaWidth = 300 '200
+                            captcha.CaptchaHeight = 100
+
+                        Case Else
+                            'little (default)
+                            captcha.CaptchaWidth = 220 ' 150
+                            captcha.CaptchaHeight = 80
+                    End Select
+
+                    '01.00.02: use only numbers as characters for Captcha
+                    Dim numOnly As Boolean = CType(Settings("CaptchaNumbers"), Boolean)
+                    If numOnly = True Then captcha.CaptchaChars = "01234567890"
+
+                    Dim divCaptcha As New HtmlGenericControl("div")
+                    divCaptcha.ID = "divCaptcha" & Me.ModuleId
+                    divCaptcha.Attributes("class") = "dnnFormItem" 'dnnTooltip
+                    Dim lblc As New Label
+                    lblc.CssClass = "dnnFormLabel"
+                    lblc.Text = Localization.GetString("Captcha.Text", LocalResourceFile)
+                    lblc.ToolTip = lblc.Text
+
+                    Dim txtCaptchaAnswer As New TextBox
+                    txtCaptchaAnswer.ID = "txtCaptchaAnswer" & Me.ModuleId
+                    divCaptcha.Controls.Add(lblc)
+                    divCaptcha.Controls.Add(txtCaptchaAnswer)
+                    divCaptcha.Controls.Add(captcha)
+                    fieldset.Controls.Add(divCaptcha)
+
+                End If
 
                     'validation summary 
                     If hasValidators = True AndAlso CType(Settings("chkValSum"), Boolean) = True Then
@@ -726,23 +749,50 @@ Namespace ODS.DNN.Modules.Form
 
         Private Sub cmdSubmit_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) 'Handles cmdSubmit.Click
             Try
-
+               
                 If Not Page.IsValid Then
                     LoggerSource.Instance.GetLogger(libName).Debug("FORM INVALID, REJECT SUBMISSION")
                     Exit Sub
                 End If
 
-                Dim u As UserInfo = Nothing
-
                 'captcha
                 If Settings("Captcha") = True Then
-                    Dim captcha As DotNetNuke.UI.WebControls.CaptchaControl = CType(FindControl("captcha_" & Me.ModuleId), DotNetNuke.UI.WebControls.CaptchaControl)
-                    If Not captcha.IsValid Then
+
+                    'mscaptcha
+                    Dim captcha As MSCaptcha.CaptchaControl = CType(FindControl("captcha_" & Me.ModuleId), MSCaptcha.CaptchaControl)
+                    Dim txtCaptchaAnswer As TextBox = CType(FindControl("txtCaptchaAnswer" & Me.ModuleId), TextBox)
+                   
+                    Try
+                        captcha.ValidateCaptcha(txtCaptchaAnswer.Text)
+                    Catch ex As Exception
+                        LoggerSource.Instance.GetLogger(libName).Error(ex.Message)
+                        LoggerSource.Instance.GetLogger(libName).Error(ex.StackTrace)
+                    End Try
+
+
+                    If Not captcha.UserValidated Then
+
+                        'Dim captcha As DotNetNuke.UI.WebControls.CaptchaControl = CType(FindControl("captcha_" & Me.ModuleId), DotNetNuke.UI.WebControls.CaptchaControl)
+                        'If Not captcha.IsValid Then
+                        LoggerSource.Instance.GetLogger(libName).Warn("INVALID CAPTCHA, REJECT SUBMISSION")
                         Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
-                        captcha.ErrorMessage = "<div style='float:left' class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+                        'captcha.ErrorMessage = "<div style='float:left' class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+
+                        Dim divCaptcha As HtmlGenericControl = FindControl("divCaptcha" & Me.ModuleId)
+                        Dim captchaError As New Label
+                        Dim divMsg As New HtmlGenericControl("div")
+                        divMsg.Attributes("class") = "dnnFormMessage dnnFormError"
+                        captchaError.Text = "<div style='float:left' class='" & sCSSCaptcha & "'>" & Localization.GetString("CaptchaError", LocalResourceFile) & "</div>"
+                        divMsg.Controls.Add(captchaError)
+
+                        divCaptcha.Controls.Add(divMsg)
+                        'plcODS.Controls.Add(divMsg)
+
                         Exit Sub
                     End If
                 End If
+
+                Dim u As UserInfo = Nothing
 
                 Dim oInfo As FormItemInfo
                 Dim AllowContactUsers As Boolean = CType(Settings("AllowContactUsers"), Boolean)
@@ -774,6 +824,14 @@ Namespace ODS.DNN.Modules.Form
                         Case FormItem.TextBox, FormItem.TextArea
                             Dim tb As TextBox = CType(FindControl("ctl_" & oInfo.FormItemID), TextBox)
                             szVal = tb.Text
+                            'DNN token-replace parser
+                            'cfr http://www.dnnsoftware.com/wiki/Page/Tokens
+                            'es: [Tab:TabName]
+                            Dim dnnsafetokenreplace As New Regex("(\[([^: ]*):([^:/ ]*)\])", RegexOptions.IgnoreCase Or RegexOptions.Multiline Or RegexOptions.IgnorePatternWhitespace Or RegexOptions.Compiled)
+                            Dim str As New MatchEvaluator(AddressOf DNNTokenReplace)
+                            tb.Text = dnnsafetokenreplace.Replace(tb.Text, str)
+                            szVal = tb.Text
+
                             If Not oInfo.Optional Then
                                 If Len(Trim(tb.Text)) = 0 Then
                                     bValid = False

@@ -14,3 +14,5 @@
 {border-left:5px #F00 solid;}
 
 span.dnnFormRequired:after, div.dnnFormItem.dnnFormRequired > div.dnnLabel span:after {content: ''}
+
+.dnnFormMessage{height:auto; min-height: 30px; margin-top: 10px; margin-bottom: 10px}
