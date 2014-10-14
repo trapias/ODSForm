@@ -616,8 +616,6 @@ Namespace ODS.DNN.Modules.Form
                     Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
                     Dim captcha As New MSCaptcha.CaptchaControl()
 
-
-
                     'Dim sCSSCaptcha As String = CType(Settings("CSSCaptcha"), String)
                     'Dim captcha As DotNetNuke.UI.WebControls.CaptchaControl = New DotNetNuke.UI.WebControls.CaptchaControl
                     captcha.ID = "captcha_" & Me.ModuleId
@@ -658,7 +656,7 @@ Namespace ODS.DNN.Modules.Form
 
                     Dim divCaptcha As New HtmlGenericControl("div")
                     divCaptcha.ID = "divCaptcha" & Me.ModuleId
-                    divCaptcha.Attributes("class") = "dnnFormItem" 'dnnTooltip
+                    divCaptcha.Attributes("class") = "dnnFormItem " & sCSSCaptcha 'dnnTooltip
                     Dim lblc As New Label
                     lblc.CssClass = "dnnFormLabel"
                     lblc.Text = Localization.GetString("Captcha.Text", LocalResourceFile)
