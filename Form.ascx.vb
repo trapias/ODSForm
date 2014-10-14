@@ -925,7 +925,10 @@ Namespace ODS.DNN.Modules.Form
                                         ed.SaveAs(myFolder.PhysicalPath & szVal)
 
                                         'give full URL to file to allow download
-                                        szVal = "<a href='http://" & Me.PortalSettings.PortalAlias.HTTPAlias & "/Portals/" & Me.PortalId.ToString & "/" & myFolder.FolderPath & szVal & "'>" & ed.FileName & "</a>"
+                                        'szVal = "<a href='http://" & Me.PortalSettings.PortalAlias.HTTPAlias & "/Portals/" & Me.PortalId.ToString & "/" & myFolder.FolderPath & szVal & "'>" & ed.FileName & "</a>"
+                                        szVal = "<a href='" & ResolveUrl("~/Portals/" & Me.PortalId.ToString & "/" & myFolder.FolderPath & szVal) & "'>" & ed.FileName & "</a>"
+
+
                                     Catch ex As Exception
                                         'MyLog("Cannot save attach: " & ex.Message)
                                         szVal = "ERROR, cannot save file " & oInfo.FormValue
