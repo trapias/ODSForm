@@ -82,10 +82,6 @@ See the Trello board for details: https://trello.com/b/vZuoVDnV/ods-form
               <name>Uninstall.SqlDataProvider</name>
               <version>1.0.8</version>
             </script>
-            <script type="UnInstall">
-              <name>Uninstall.SqlDataProvider</name>
-              <version>1.0.8</version>
-            </script>
           </scripts>
         </component>
         <component type="Module">
