@@ -508,10 +508,6 @@ See the Trello board for details: https://trello.com/b/vZuoVDnV/ods-form
             </file>
             <file>
               <path>js\DataTables-1.9.2\media\images</path>
-              <name>Sorting icons.psd</name>
-            </file>
-            <file>
-              <path>js\DataTables-1.9.2\media\images</path>
               <name>sort_asc.png</name>
             </file>
             <file>
