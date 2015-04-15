@@ -36,7 +36,7 @@ Namespace ODS.DNN.Modules.Form
                 JavaScript.RequestRegistration(CommonJs.jQueryUI)
                 JavaScript.RequestRegistration(CommonJs.DnnPlugins)
             End If
-			
+            
                 LocalizeForm = CType(Settings("EnableLocalization"), Boolean)
                 If LocalizeForm Then cultureCode = System.Threading.Thread.CurrentThread.CurrentCulture.ToString
 
@@ -656,7 +656,7 @@ Namespace ODS.DNN.Modules.Form
 
                     Dim divCaptcha As New HtmlGenericControl("div")
                     divCaptcha.ID = "divCaptcha" & Me.ModuleId
-                    divCaptcha.Attributes("class") = "dnnFormItem " & sCSSCaptcha 'dnnTooltip
+                    divCaptcha.Attributes("class") = "dnnFormItem msCaptcha " & sCSSCaptcha 'dnnTooltip
                     Dim lblc As New Label
                     lblc.CssClass = "dnnFormLabel"
                     lblc.Text = Localization.GetString("Captcha.Text", LocalResourceFile)
@@ -921,17 +921,18 @@ Namespace ODS.DNN.Modules.Form
                                     Try
                                         'MyLog("save to " & myFolder.PhysicalPath & szVal)
                                         ed.SaveAs(myFolder.PhysicalPath & szVal)
-
-                                        'give full URL to file to allow download
-                                        'szVal = "<a href='http://" & Me.PortalSettings.PortalAlias.HTTPAlias & "/Portals/" & Me.PortalId.ToString & "/" & myFolder.FolderPath & szVal & "'>" & ed.FileName & "</a>"
-                                        szVal = "<a href='" & ResolveUrl("~/Portals/" & Me.PortalId.ToString & "/" & myFolder.FolderPath & szVal) & "'>" & ed.FileName & "</a>"
-
-
                                     Catch ex As Exception
                                         'MyLog("Cannot save attach: " & ex.Message)
-                                        szVal = "ERROR, cannot save file " & oInfo.FormValue
+                                        szVal = "ERROR, cannot save file " & oInfo.FormValue & " " & ex.Message
                                     End Try
 
+                                    Try
+                                        'give full URL to file to allow download
+                                        Dim uri As New Uri(HttpContext.Current.Request.Url.AbsoluteUri)
+                                        szVal = "<a href='" & uri.Scheme + uri.SchemeDelimiter + uri.Host & Me.PortalSettings.HomeDirectory & myFolder.FolderPath & szVal & "'>" & ed.FileName & "</a>"
+                                    Catch ex As Exception
+                                        szVal = "ERROR, cannot save file " & oInfo.FormValue & " " & ex.Message
+                                    End Try
                                 End If
 
 
