@@ -931,7 +931,7 @@ Namespace ODS.DNN.Modules.Form
                                         Dim uri As New Uri(HttpContext.Current.Request.Url.AbsoluteUri)
                                         szVal = "<a href='" & uri.Scheme + uri.SchemeDelimiter + uri.Host & Me.PortalSettings.HomeDirectory & myFolder.FolderPath & szVal & "'>" & ed.FileName & "</a>"
                                     Catch ex As Exception
-                                        szVal = "ERROR, cannot save file " & oInfo.FormValue & " " & ex.Message
+                                        szVal = "ERROR, cannot parse file " & oInfo.FormValue & " " & ex.Message
                                     End Try
                                 End If
 

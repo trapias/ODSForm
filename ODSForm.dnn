@@ -1,6 +1,6 @@
 <dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="Form" type="Module" version="1.0.8">
+    <package name="Form" type="Module" version="1.0.9">
       <friendlyName>ODS Form</friendlyName>
       <description>ODS Form allows to publish simple forms to get feedback from users. Based on the original module created by Bjarte Djuvik Naess (www.nukenow.com, no more developed), now developed by Alberto Velo (http://albe.ihnet.it/Software/ODS_Form).</description>
       <iconFile />
@@ -20,7 +20,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 </license>
-      <releaseNotes>Version 01.00.08
+      <releaseNotes>Version 01.00.09
 
 See the Trello board for details: https://trello.com/b/vZuoVDnV/ods-form
 </releaseNotes>
