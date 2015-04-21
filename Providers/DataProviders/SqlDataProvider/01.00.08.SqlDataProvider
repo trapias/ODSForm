@@ -1,5 +1,9 @@
-﻿ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ADD [CustomData] [nvarchar](512) NULL;
-GO
+﻿if not exists(select * from sys.columns 
+            where Name = N'CustomData' and Object_ID = Object_ID(N'ODSFormItem'))
+begin
+	ALTER TABLE {databaseOwner}{objectQualifier}ODSFormItem ADD [CustomData] nvarchar(512) NULL;
+end
+go
 
 
 ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemAdd]
@@ -8,7 +12,7 @@ ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemAdd]
 	@FormType int,
 	@FormValue nvarchar(MAX),
 	@FormSelectedValue nvarchar(MAX),
-	@FormLabel nvarchar(100),
+	@FormLabel nvarchar(255),
 	@SortValue int,
 	@Optional bit,
 	@Width int,
@@ -144,7 +148,7 @@ ALTER  PROCEDURE {databaseOwner}{objectQualifier}[ODSFormItemUpdate]
 	@FormType int, 
 	@FormValue varchar(8000), 
 	@FormSelectedValue varchar(8000), 
-	@FormLabel varchar(100),
+	@FormLabel varchar(255),
 	@Optional bit,
 	@Width int,
 	@Height int,

@@ -25,6 +25,14 @@ Updated to use latest version of DataTables (1.10.6).
 ### Import & Export module
 Implemented the IPortable DNN interface, that allows to export and import module content (form fields).
 
+### MSCaptcha
+In order to use MSCaptcha you have to add an handler to web.config:
+
+```
+	<add name="MSCaptcha.captchaImageHandler" verb="GET" path="CaptchaImage.axd" type="MSCaptcha.captchaImageHandler, MSCaptcha" resourceType="Unspecified" />
+```
+
+(to be added to installation script)
 
 ## Newtonsoft.Json.dll
 Note that since version 01.00.07 ODSForm does not include Newtonsoft library anymore, so if you are to install on DNN 6 you have to get it separately (download from [http://json.codeplex.com](http://json.codeplex.com/) ).
