@@ -404,20 +404,33 @@ Namespace ODS.DNN.Modules.Form
                                     Dim cmd As SqlCommand = conn.CreateCommand
                                     cmd.CommandTimeout = 60
                                     cmd.CommandText = oInfo.FormValue.ToString.Substring(5)
-                                    Dim dr As SqlDataReader = cmd.ExecuteReader
-                                    Dim dt As DataTable = New DataTable
-                                    dt.Columns.Add("ID")
-                                    dt.Columns.Add("VALUE")
-                                    Do While dr.Read
-                                        Dim r As DataRow = dt.NewRow
-                                        r(0) = dr(0)
-                                        r(1) = dr(1)
-                                        dt.Rows.Add(r)
-                                    Loop
-                                    ddl.DataSource = dt
-                                    ddl.DataValueField = "ID"
-                                    ddl.DataTextField = "VALUE"
-                                    ddl.DataBind()
+                                    If Not cmd.CommandText Is String.Empty Then
+
+                                        Dim dr As SqlDataReader = cmd.ExecuteReader
+                                        Dim dt As DataTable = New DataTable
+                                        dt.Columns.Add("ID")
+                                        dt.Columns.Add("VALUE")
+                                        Dim emptyRow As DataRow = dt.NewRow
+                                        dt.Rows.Add(emptyRow)
+                                        Do While dr.Read
+                                            Dim r As DataRow = dt.NewRow
+                                            If TypeOf (dr(0)) Is DateTime Then
+                                                r(0) = dr(0).ToShortDateString
+                                            Else
+                                                r(0) = dr(0)
+                                            End If
+                                            If TypeOf (dr(1)) Is DateTime Then
+                                                r(1) = dr(1).ToShortDateString
+                                            Else
+                                                r(1) = dr(1)
+                                            End If
+                                            dt.Rows.Add(r)
+                                        Loop
+                                        ddl.DataSource = dt
+                                        ddl.DataValueField = "ID"
+                                        ddl.DataTextField = "VALUE"
+                                        ddl.DataBind()
+                                    End If
                                 Catch ex As Exception
                                     LoggerSource.Instance.GetLogger(libName).Error(ex.Message)
                                     Dim lblErr As Label = New Label
@@ -427,6 +440,13 @@ Namespace ODS.DNN.Modules.Form
                                 Finally
                                     conn.Close()
                                 End Try
+
+                                '1.00.11 cascading dropdowns
+                                If oInfo.CustomData <> String.Empty Then
+                                    ddl.AutoPostBack = True
+                                    AddHandler ddl.SelectedIndexChanged, AddressOf Me.ddlCascading_SelectedIndexChanged
+                                End If
+
                             Else
                                 ddl.DataSource = Split(oInfo.FormValue & "", ";")
                                 ddl.DataBind()
@@ -1274,6 +1294,93 @@ Namespace ODS.DNN.Modules.Form
             tk.ModuleId = Me.ModuleId
             Return tk.ReplaceEnvironmentTokens(m.Value)
         End Function
+
+        ''' <summary>
+        ''' cascading dropdowns: perform sql query to populate linked dropdown
+        ''' </summary>
+        ''' <param name="sender"></param>
+        ''' <param name="e"></param>
+        Private Sub ddlCascading_SelectedIndexChanged(ByVal sender As System.Object, ByVal e As System.EventArgs)
+            Dim ddl As DropDownList = sender
+            Dim value As String = ddl.SelectedValue
+            'MyLog(ddl.ID & " changed to " & value)
+            'get id of child from customdata, and run query
+            Dim sID() As String = ddl.ID.ToString().Split("_")
+            'MyLog("sid0=" & sID(0))
+            'MyLog("sid1=" & sID(1))
+            Dim myID As String = sID(1)
+            Dim ct As FormItemController = New FormItemController
+            Dim oi As FormItemInfo = ct.Get(myID)
+            If oi Is Nothing Then
+                MyLog("Could not load control " & myID)
+                Return
+            End If
+            If oi.CustomData.Contains(":") Then
+
+                'SQL query customdata: childID:sqlquery
+                Dim vv() As String = oi.CustomData.Split(":")
+                Dim sql As String = vv(1).Replace("[ID]", value)
+                'MyLog("child is id " & vv(0))
+                'MyLog("sql = " & sql)
+
+                Dim child As DropDownList = FindControl("ctl_" & vv(0))
+                If child Is Nothing Then
+                    MyLog("could not load child DDL")
+                    Return
+                Else
+                    Dim conn As New SqlConnection(DotNetNuke.Common.Utilities.Config.GetConnectionString())
+                    Try
+                        conn.Open()
+                        Dim cmd As SqlCommand = conn.CreateCommand
+                        cmd.CommandTimeout = 60
+                        cmd.CommandText = sql
+                        Dim dr As SqlDataReader = cmd.ExecuteReader
+                        Dim dt As DataTable = New DataTable
+                        dt.Columns.Add("ID")
+                        dt.Columns.Add("VALUE")
+                        Dim emptyRow As DataRow = dt.NewRow
+                        dt.Rows.Add(emptyRow)
+                        Do While dr.Read
+                            Dim r As DataRow = dt.NewRow
+                            If TypeOf (dr(0)) Is DateTime Then
+                                r(0) = dr(0).ToShortDateString
+                            Else
+                                r(0) = dr(0)
+                            End If
+                            If TypeOf (dr(1)) Is DateTime Then
+                                r(1) = dr(1).ToShortDateString
+                            Else
+                                r(1) = dr(1)
+                            End If
+                            dt.Rows.Add(r)
+                        Loop
+                        child.DataSource = dt
+                        child.DataValueField = "ID"
+                        child.DataTextField = "VALUE"
+                        child.DataBind()
+                    Catch ex As Exception
+                        LoggerSource.Instance.GetLogger(libName).Error(ex.Message)
+                        Dim lblErr As Label = New Label
+                        lblErr.Text = "ERROR IN QUERY: " & ex.Message
+                        lblErr.ForeColor = Color.Red
+                        child.Parent.Controls.Add(lblErr)
+                    Finally
+                        conn.Close()
+                    End Try
+
+                End If
+                'Else
+                '    'cascading Non sql?
+                '    Dim child As DropDownList = FindControl("ctl_" & oi.CustomData)
+                '    If child Is Nothing Then
+                '        MyLog("could not load child DDL")
+                '        Return
+                '    Else
+
+                '    End If
+            End If
+
+        End Sub
 
     End Class
 

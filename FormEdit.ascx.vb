@@ -126,9 +126,39 @@ Namespace ODS.DNN.Modules.Form
                                     End If
 
                                 Case FormItem.DropDownList
+                                    If objForm.CustomData <> "" Then
+                                        cbisDBQueryCascading.Checked = True
+                                    End If
+                                    'populate ddlQueryCascade
+                                    Dim emptyItem As New ListItem
+                                    ddlQueryCascade.Items.Add(emptyItem)
+                                    'Get list of formcontrols
+                                    Dim al As ArrayList = objCtlForm.List(MyBase.PortalId, MyBase.ModuleId, cultureCode)
+                                    For Each o In al
+                                        Dim oInfo As FormItemInfo = CType(o, FormItemInfo)
+                                        If oInfo.FormType = FormItem.DropDownList AndAlso oInfo.FormItemID <> objForm.FormItemID Then
+                                            Dim l As New ListItem
+                                            l.Value = oInfo.FormItemID
+                                            l.Text = oInfo.FormLabel
+                                            ddlQueryCascade.Items.Add(l)
+                                        End If
+                                    Next
+                                    LoggerSource.Instance.GetLogger(libName).Debug("objForm.FormValue=" & objForm.FormValue)
+
                                     If objForm.FormValue.ToString.StartsWith("[SQL]") Then
                                         cbisDBQuery.Checked = True
                                         Me.tbFormValues.Text = objForm.FormValue.Substring(5)
+                                        If objForm.CustomData <> "" Then
+                                            If objForm.CustomData.Contains(":") Then
+                                                Dim rv() As String = objForm.CustomData.Split(":")
+                                                ddlQueryCascade.SelectedValue = rv(0)
+                                                txtCascadeQuery.Text = rv(1)
+                                            Else
+                                                ddlQueryCascade.SelectedValue = objForm.CustomData
+                                            End If
+
+                                        End If
+
                                     End If
                             End Select
 
@@ -219,7 +249,16 @@ Namespace ODS.DNN.Modules.Form
                             Case FormItem.MultipleSelect
                                 objForm.CustomData = "ddlMultipleSelectCol=" & ddlMultipleSelectCol.SelectedValue & ";"
 
-                            Case Else
+                        Case FormItem.DropDownList
+                            If cbisDBQuery.Checked AndAlso cbisDBQueryCascading.Checked Then
+                                'cascading SQL dropdowns
+                                objForm.CustomData = ddlQueryCascade.SelectedValue & ":" & txtCascadeQuery.Text
+                                'ElseIf cbisDBQueryCascading.Checked
+                                'cascading non sql
+                                ' objForm.CustomData = ddlQueryCascade.SelectedValue
+                            End If
+
+                        Case Else
                                 objForm.CustomData = Null.NullString
                         End Select
 
@@ -310,6 +349,9 @@ Namespace ODS.DNN.Modules.Form
             trAllowValueOverride.Visible = False
             Me.trMultipleSelectCol.Visible = False
             Me.trisDBQuery.Visible = False
+            Me.trisDBQueryCascading.Visible = False
+            Me.trQueryCascade.Visible = False
+            Me.trCascadeQuery.Visible = False
 
             Select Case CInt(Me.ddlFormTypes.SelectedValue)
                 'Checkbox
@@ -320,7 +362,7 @@ Namespace ODS.DNN.Modules.Form
                     trWidth.Visible = False
                     trHeight.Visible = False
                     trAllowValueOverride.Visible = True
-                    'DropDownList
+                'DropDownList
                 Case FormItem.DropDownList
                     lblHelp.Text = Localization.GetString("HelpDropDownList.Text", LocalResourceFile)
                     trWidth.Visible = False
@@ -328,6 +370,12 @@ Namespace ODS.DNN.Modules.Form
                     Me.trFormValues.Visible = True
                     trAllowValueOverride.Visible = True
                     Me.trisDBQuery.Visible = True
+                    If cbisDBQuery.Checked Then
+                        Me.trisDBQueryCascading.Visible = True
+                        Me.trQueryCascade.Visible = True
+                        Me.trCascadeQuery.Visible = True
+                    End If
+
                 'Label
                 Case FormItem.Label
                     Me.trRequired.Visible = False
@@ -337,7 +385,7 @@ Namespace ODS.DNN.Modules.Form
                     trWidth.Visible = False
                     trHeight.Visible = False
                     Me.trFormValues.Visible = True
-                    'MultipleSelect
+                'MultipleSelect
                 Case FormItem.MultipleSelect
                     lblHelp.Text = Localization.GetString("HelpMultipleSelect.Text", LocalResourceFile)
                     trWidth.Visible = False
@@ -345,7 +393,7 @@ Namespace ODS.DNN.Modules.Form
                     Me.trFormValues.Visible = True
                     trAllowValueOverride.Visible = True
                     Me.trMultipleSelectCol.Visible = True
-                    'TextArea
+                'TextArea
                 Case FormItem.TextArea
                     Me.trSelectedValues.Visible = False
                     lblHelp.Text = Localization.GetString("HelpTextArea.Text", LocalResourceFile)
@@ -360,14 +408,14 @@ Namespace ODS.DNN.Modules.Form
                     trCustomRegex.Visible = True
                     trAllowValueOverride.Visible = True
                     Me.trFormValues.Visible = True
-                    'RadioButtonList
+                'RadioButtonList
                 Case FormItem.RadioButtonList
                     lblHelp.Text = Localization.GetString("HelpRadioButtonList.Text", LocalResourceFile)
                     trWidth.Visible = False
                     trHeight.Visible = False
                     Me.trFormValues.Visible = True
                     trAllowValueOverride.Visible = True
-                    'HTML Editor
+                'HTML Editor
                 Case FormItem.DNNRichTextEditControl
                     Me.trSelectedValues.Visible = False
                     lblHelp.Text = Localization.GetString("HelpDNNRichTextEditControl.Text", LocalResourceFile)
@@ -406,6 +454,19 @@ Namespace ODS.DNN.Modules.Form
                     trFieldTitle.Visible = False
             End Select
         End Sub
+        Protected Sub cbisDBQuery_CheckedChanged(sender As Object, e As EventArgs)
+
+            If cbisDBQuery.Checked Then
+                Me.trisDBQueryCascading.Visible = True
+                Me.trQueryCascade.Visible = True
+                Me.trCascadeQuery.Visible = True
+            Else
+                Me.trisDBQueryCascading.Visible = False
+                Me.trQueryCascade.Visible = False
+                Me.trCascadeQuery.Visible = False
+            End If
+        End Sub
+
     End Class
 
 

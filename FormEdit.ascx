@@ -64,7 +64,19 @@
      </div>
       <div class="dnnFormItem" id="trisDBQuery" runat="server" visible="false">
          <dnn:label id="plisDBQuery" runat="server" controlname="cbisDBQuery" suffix=":" resourcekey="plisDBQuery" helptext=""></dnn:label>
-         <asp:CheckBox id="cbisDBQuery" runat="server"></asp:CheckBox>
+         <asp:CheckBox id="cbisDBQuery" runat="server" AutoPostBack="true" OnCheckedChanged="cbisDBQuery_CheckedChanged"></asp:CheckBox>
+     </div>
+      <div class="dnnFormItem" id="trisDBQueryCascading" runat="server" visible="false">
+         <dnn:label id="Label1" runat="server" controlname="cbisDBQueryCascading" suffix=":" resourcekey="plisDBQueryCascading" helptext=""></dnn:label>
+         <asp:CheckBox id="cbisDBQueryCascading" runat="server"></asp:CheckBox>
+     </div>
+     <div class="dnnFormItem" id="trQueryCascade" runat="server" visible="false">
+         <dnn:label id="plQueryCascade" runat="server" controlname="cbisDBQuery" suffix=":" resourcekey="plQueryCascade" helptext=""></dnn:label>
+         <asp:DropDownList ID="ddlQueryCascade" runat="server"></asp:DropDownList>
+     </div>
+      <div class="dnnFormItem" id="trCascadeQuery" runat="server">
+         <dnn:label id="plCascadeQuery" runat="server" controlname="txtCascadeQuery" suffix=":" resourcekey="plCascadeQuery" helptext=""></dnn:label>
+         <asp:TextBox Runat="server" ID="txtCascadeQuery" />
      </div>
      <div class="dnnFormItem" id="trFormValues" runat="server">
          <dnn:label id="plFormValues" runat="server" controlname="tbFormValues" suffix=":" resourcekey="plFormValues" helptext=""></dnn:label>

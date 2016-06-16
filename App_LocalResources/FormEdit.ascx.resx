@@ -235,7 +235,7 @@
     <value>Choose the type of control</value>
   </data>
   <data name="plFormValues.Help" xml:space="preserve">
-    <value>Set allowed values, as a comma separated list</value>
+    <value>Set allowed values as a comma separated list, or SQL query </value>
   </data>
   <data name="plRequired.Help" xml:space="preserve">
     <value>Is this field mandatory?</value>
@@ -258,10 +258,28 @@
   <data name="lblMultipleSelectCol.Text" xml:space="preserve">
     <value>Split columns</value>
   </data>
+  <data name="plCascadeQuery.Help" xml:space="preserve">
+    <value>Query to populate other dropdown; include [ID] to be changed with the selected value</value>
+  </data>
+  <data name="plCascadeQuery.Text" xml:space="preserve">
+    <value>Populating query</value>
+  </data>
   <data name="plisDBQuery.Help" xml:space="preserve">
     <value>The dropdown will be populated with the SQL query you set as value</value>
   </data>
   <data name="plisDBQuery.Text" xml:space="preserve">
     <value>SQL Query</value>
+  </data>
+  <data name="plisDBQueryCascading.Help" xml:space="preserve">
+    <value>Populate other dropdown on selection</value>
+  </data>
+  <data name="plisDBQueryCascading.Text" xml:space="preserve">
+    <value>Cascade populate</value>
+  </data>
+  <data name="plQueryCascade.Help" xml:space="preserve">
+    <value>Select control to be populated on cascade after selection</value>
+  </data>
+  <data name="plQueryCascade.Text" xml:space="preserve">
+    <value>Control to populate</value>
   </data>
 </root>
