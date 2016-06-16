@@ -10,6 +10,20 @@ ODS Form is a DotNetNuke module that allows you to publish simple feedback forms
 
 [ODSForm Trello support board](https://trello.com/b/vZuoVDnV/ods-form)
 
+## Latest version: 01.00.10
+New capability to populate DropDownList form item types with an SQL query.
+
+To use just flag the new checkbox "SQL Query" and write a simple SQL query as the form item value.
+
+The query runs over DNN database, and should return only **two columns**: the first used as **value** and the second as the **text** of the dropdown options.
+
+For example a valid query would be:
+
+```
+SELECT userid,displayname FROM users
+```
+
+
 ## Latest version: 01.00.09
 
 ### New Request.Servervariables custom token

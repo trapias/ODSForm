@@ -396,8 +396,41 @@ Namespace ODS.DNN.Modules.Form
                             'DropDownList
                         Case FormItem.DropDownList
                             Dim ddl As DropDownList = New DropDownList
-                            ddl.DataSource = Split(oInfo.FormValue & "", ";")
-                            ddl.DataBind()
+                            '1.00.10 allow db queries
+                            If oInfo.FormValue.ToString.StartsWith("[SQL]") Then
+                                Dim conn As New SqlConnection(DotNetNuke.Common.Utilities.Config.GetConnectionString())
+                                Try
+                                    conn.Open()
+                                    Dim cmd As SqlCommand = conn.CreateCommand
+                                    cmd.CommandTimeout = 60
+                                    cmd.CommandText = oInfo.FormValue.ToString.Substring(5)
+                                    Dim dr As SqlDataReader = cmd.ExecuteReader
+                                    Dim dt As DataTable = New DataTable
+                                    dt.Columns.Add("ID")
+                                    dt.Columns.Add("VALUE")
+                                    Do While dr.Read
+                                        Dim r As DataRow = dt.NewRow
+                                        r(0) = dr(0)
+                                        r(1) = dr(1)
+                                        dt.Rows.Add(r)
+                                    Loop
+                                    ddl.DataSource = dt
+                                    ddl.DataValueField = "ID"
+                                    ddl.DataTextField = "VALUE"
+                                    ddl.DataBind()
+                                Catch ex As Exception
+                                    LoggerSource.Instance.GetLogger(libName).Error(ex.Message)
+                                    Dim lblErr As Label = New Label
+                                    lblErr.Text = "ERROR IN QUERY: " & ex.Message
+                                    lblErr.ForeColor = Color.Red
+                                    div.Controls.Add(lblErr)
+                                Finally
+                                    conn.Close()
+                                End Try
+                            Else
+                                ddl.DataSource = Split(oInfo.FormValue & "", ";")
+                                ddl.DataBind()
+                            End If
                             ddl.ID = "ctl_" & oInfo.FormItemID
                             ddl.CssClass = IIf(oInfo.CSSClass = String.Empty, "FormDropDownList", oInfo.CSSClass)
 

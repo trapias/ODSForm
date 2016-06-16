@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="plFormValues.Text" xml:space="preserve">
     <value>Value(s)</value>
@@ -257,5 +257,11 @@
   </data>
   <data name="lblMultipleSelectCol.Text" xml:space="preserve">
     <value>Split columns</value>
+  </data>
+  <data name="plisDBQuery.Help" xml:space="preserve">
+    <value>The dropdown will be populated with the SQL query you set as value</value>
+  </data>
+  <data name="plisDBQuery.Text" xml:space="preserve">
+    <value>SQL Query</value>
   </data>
 </root>

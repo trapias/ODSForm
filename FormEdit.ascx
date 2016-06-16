@@ -62,6 +62,10 @@
          <dnn:label id="lblCustomClass" runat="server" controlname="txtCustomClass" suffix=":" resourcekey="lblCustomClass" helptext=""></dnn:label>
          <asp:TextBox Runat="server" ID="txtCustomClass" />
      </div>
+      <div class="dnnFormItem" id="trisDBQuery" runat="server" visible="false">
+         <dnn:label id="plisDBQuery" runat="server" controlname="cbisDBQuery" suffix=":" resourcekey="plisDBQuery" helptext=""></dnn:label>
+         <asp:CheckBox id="cbisDBQuery" runat="server"></asp:CheckBox>
+     </div>
      <div class="dnnFormItem" id="trFormValues" runat="server">
          <dnn:label id="plFormValues" runat="server" controlname="tbFormValues" suffix=":" resourcekey="plFormValues" helptext=""></dnn:label>
          <asp:TextBox Runat="server" ID="tbFormValues" />

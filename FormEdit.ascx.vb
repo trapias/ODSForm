@@ -124,6 +124,12 @@ Namespace ODS.DNN.Modules.Form
                                                 ddlMultipleSelectCol.SelectedValue = iCols
                                         End Select
                                     End If
+
+                                Case FormItem.DropDownList
+                                    If objForm.FormValue.ToString.StartsWith("[SQL]") Then
+                                        cbisDBQuery.Checked = True
+                                        Me.tbFormValues.Text = objForm.FormValue.Substring(5)
+                                    End If
                             End Select
 
 
@@ -166,66 +172,74 @@ Namespace ODS.DNN.Modules.Form
                     objForm.FormItemID = FormItemID
                     objForm.ModuleID = ModuleId
                     objForm.FormLabel = Me.tbFormLabel.Text & ""
-                    objForm.FormValue = Me.tbFormValues.Text & ""
+                    If ddlFormTypes.SelectedValue = FormItem.DropDownList Then
+                        If cbisDBQuery.Checked Then
+                            objForm.FormValue = "[SQL]" & Me.tbFormValues.Text & ""
+                        Else
+                            objForm.FormValue = Me.tbFormValues.Text & ""
+                        End If
+                    Else
+                        objForm.FormValue = Me.tbFormValues.Text & ""
+                    End If
                     objForm.FormSelectedValue = Me.tbSelectedValues.Text & ""
                     objForm.FormType = CInt(Me.ddlFormTypes.SelectedValue)
                     objForm.Optional = Not Me.cbRequired.Checked
                     objForm.AllowValueOverride = chkAllowValueOverride.Checked
 
-                    'destination folder for FileUpload fields
-                    If ddlFormTypes.SelectedValue = FormItem.FileUpload Then
-                        objForm.FormValue = ddlFilePath.SelectedValue
-                    ElseIf ddlFormTypes.SelectedValue = FormItem.TextBox Then
-                        objForm.CustomRegex = txtCustomRegex.Text
+                        'destination folder for FileUpload fields
+                        If ddlFormTypes.SelectedValue = FormItem.FileUpload Then
+                            objForm.FormValue = ddlFilePath.SelectedValue
+                        ElseIf ddlFormTypes.SelectedValue = FormItem.TextBox Then
+                            objForm.CustomRegex = txtCustomRegex.Text
+                        End If
+
+                        ''01.00.01: controls width and height
+                        Try
+                            objForm.Width = txtWidth.Text
+                        Catch ex As Exception
+                            objForm.Width = Null.NullInteger
+                        End Try
+                        Try
+                            objForm.Height = txtHeight.Text
+                        Catch ex As Exception
+                            objForm.Height = Null.NullInteger
+                        End Try
+
+                        '01.00.02: custom css class for control
+                        objForm.CSSClass = Me.txtCustomClass.Text
+
+                        '01.00.05
+                        objForm.FormItemTitle = txtFormItemTitle.Text
+                        objForm.FormLabelClass = txtFormLabelClass.Text ' custom css class for label
+
+                        '01.00.08 split multiselect in columns
+                        'CustomData contains ddlMultipleSelectCol=nCols
+                        Select Case objForm.FormType
+
+                            Case FormItem.MultipleSelect
+                                objForm.CustomData = "ddlMultipleSelectCol=" & ddlMultipleSelectCol.SelectedValue & ";"
+
+                            Case Else
+                                objForm.CustomData = Null.NullString
+                        End Select
+
+                        Dim objCtlForm As New FormItemController
+                        If Null.IsNull(FormItemID) Then
+                            objForm.Culture = cultureCode
+                            objCtlForm.Add(objForm)
+                        Else
+                            'don't update culture code, issues with ifinity friendlyurl to be solved (gets default language) 01.00.05
+                            'objForm.Culture = cultureCode
+                            objCtlForm.Update(objForm)
+                        End If
+
+                        If sender Is cmdUpdateContinue Then
+                            Response.Redirect(EditUrl("FormItemID", FormItemID), True)
+                        End If
+
+                        ' Redirect back to the portal home page
+                        Response.Redirect(NavigateURL(), True)
                     End If
-
-                    ''01.00.01: controls width and height
-                    Try
-                        objForm.Width = txtWidth.Text
-                    Catch ex As Exception
-                        objForm.Width = Null.NullInteger
-                    End Try
-                    Try
-                        objForm.Height = txtHeight.Text
-                    Catch ex As Exception
-                        objForm.Height = Null.NullInteger
-                    End Try
-
-                    '01.00.02: custom css class for control
-                    objForm.CSSClass = Me.txtCustomClass.Text
-
-                    '01.00.05
-                    objForm.FormItemTitle = txtFormItemTitle.Text
-                    objForm.FormLabelClass = txtFormLabelClass.Text ' custom css class for label
-
-                    '01.00.08 split multiselect in columns
-                    'CustomData contains ddlMultipleSelectCol=nCols
-                    Select Case objForm.FormType
-
-                        Case FormItem.MultipleSelect
-                            objForm.CustomData = "ddlMultipleSelectCol=" & ddlMultipleSelectCol.SelectedValue & ";"
-
-                        Case Else
-                            objForm.CustomData = Null.NullString
-                    End Select
-
-                    Dim objCtlForm As New FormItemController
-                    If Null.IsNull(FormItemID) Then
-                        objForm.Culture = cultureCode
-                        objCtlForm.Add(objForm)
-                    Else
-                        'don't update culture code, issues with ifinity friendlyurl to be solved (gets default language) 01.00.05
-                        'objForm.Culture = cultureCode
-                        objCtlForm.Update(objForm)
-                    End If
-
-                    If sender Is cmdUpdateContinue Then
-                        Response.Redirect(EditUrl("FormItemID", FormItemID), True)
-                    End If
-
-                    ' Redirect back to the portal home page
-                    Response.Redirect(NavigateURL(), True)
-                End If
             Catch exc As Exception
                 ProcessModuleLoadException(Me, exc)
             End Try
@@ -295,6 +309,7 @@ Namespace ODS.DNN.Modules.Form
             trCustomRegex.Visible = False
             trAllowValueOverride.Visible = False
             Me.trMultipleSelectCol.Visible = False
+            Me.trisDBQuery.Visible = False
 
             Select Case CInt(Me.ddlFormTypes.SelectedValue)
                 'Checkbox
@@ -312,7 +327,8 @@ Namespace ODS.DNN.Modules.Form
                     trHeight.Visible = False
                     Me.trFormValues.Visible = True
                     trAllowValueOverride.Visible = True
-                    'Label
+                    Me.trisDBQuery.Visible = True
+                'Label
                 Case FormItem.Label
                     Me.trRequired.Visible = False
                     Me.trFormLabel.Visible = True
