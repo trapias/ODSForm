@@ -252,30 +252,30 @@ Namespace ODS.DNN.Modules.Form
                     Dim lblDn As New Label
                     lblDn.Text = "<a title='Move DOWN' href=" & dnURL & "><img src=""" & ResolveUrl("~/icons/sigma/Dn_16X16_Standard.png") & """ border=0></a>"
 
-                    If oInfo.FormType = FormItem.Label Then
+                    'If oInfo.FormType = FormItem.Label Then
 
-                        'div.Attributes("class") &= " dnnTooltip"
+                    '    'div.Attributes("class") &= " dnnTooltip"
 
-                        If IsEditable Then
-                            'td2.Controls.AddAt(0, lblEdit)
-                            divLabel.Controls.AddAt(0, lblEdit)
-                            divLabel.Controls.AddAt(1, lblDel)
-                            divLabel.Controls.AddAt(2, lblUp)
-                            divLabel.Controls.AddAt(3, lblDn)
-                        End If
-                    Else
+                    '    If IsEditable Then
+                    '        'td2.Controls.AddAt(0, lblEdit)
+                    '        divLabel.Controls.AddAt(0, lblEdit)
+                    '        divLabel.Controls.AddAt(1, lblDel)
+                    '        divLabel.Controls.AddAt(2, lblUp)
+                    '        divLabel.Controls.AddAt(3, lblDn)
+                    '    End If
+                    'Else
 
-                        'div.Attributes("class") &= " dnnTooltip"
+                    'div.Attributes("class") &= " dnnTooltip"
 
-                        If IsEditable Then
-                            divLabel.Controls.Add(lblEdit)
-                            divLabel.Controls.Add(lblDel)
-                            divLabel.Controls.Add(lblUp)
-                            divLabel.Controls.Add(lblDn)
-                        End If
+                    If IsEditable Then
+                        divLabel.Controls.Add(lblEdit)
+                        divLabel.Controls.Add(lblDel)
+                        divLabel.Controls.Add(lblUp)
+                        divLabel.Controls.Add(lblDn)
+                    End If
 
-                        'create label
-                        Dim lbl As New Label
+                    'create label
+                    Dim lbl As New Label
                         '01.00.02: custom css class for labels
                         Dim sCustomLabelClass As String = oInfo.FormLabelClass 'CType(Settings("CSSLabels"), String)
                         If sCustomLabelClass <> String.Empty Then
@@ -284,11 +284,14 @@ Namespace ODS.DNN.Modules.Form
                             lbl.CssClass = sCustomLabelClass
                             lbl.Text = oInfo.FormLabel
                         Else
-                            'lbl.CssClass = "dnnFormLabel"
-                            'default: use resx
-                            '<span class=FormLabel>[FormLabel]:</span>
+                        'lbl.CssClass = "dnnFormLabel"
+                        'default: use resx
+                        '<span class=FormLabel>[FormLabel]:</span>
+                        If oInfo.FormLabel <> String.Empty Then
                             lbl.Text = Replace(Localization.GetString("FormLabel.Text", LocalResourceFile), "[FormLabel]", oInfo.FormLabel)
                         End If
+
+                    End If
 
                         'tooltip
                         If oInfo.FormItemTitle.Trim <> "" Then
@@ -305,12 +308,12 @@ Namespace ODS.DNN.Modules.Form
                             divLabel.Controls.Add(lbl)
                         End If
 
-                    End If
+                        ' End If
 
-                    'DNN token-replace parser
-                    'cfr http://www.dnnsoftware.com/wiki/Page/Tokens
-                    'es: [Tab:TabName]
-                    Dim dnnsafetokenreplace As New Regex("(\[([^: ]*):([^:/ ]*)\])", RegexOptions.IgnoreCase Or RegexOptions.Multiline Or RegexOptions.IgnorePatternWhitespace Or RegexOptions.Compiled)
+                        'DNN token-replace parser
+                        'cfr http://www.dnnsoftware.com/wiki/Page/Tokens
+                        'es: [Tab:TabName]
+                        Dim dnnsafetokenreplace As New Regex("(\[([^: ]*):([^:/ ]*)\])", RegexOptions.IgnoreCase Or RegexOptions.Multiline Or RegexOptions.IgnorePatternWhitespace Or RegexOptions.Compiled)
                     Dim str As New MatchEvaluator(AddressOf DNNTokenReplace)
 
                     'Create controls by type
@@ -382,15 +385,16 @@ Namespace ODS.DNN.Modules.Form
 
                             'Label
                         Case FormItem.Label
-                            Dim lbl As Label = New Label
-                            lbl.Text = oInfo.FormLabel & ""
-                            lbl.ID = "ctl_" & oInfo.FormItemID
+                            Dim lblVal As Label = New Label
+                            'lbl.Text = oInfo.FormLabel & ""
+                            lblVal.Text = dnnsafetokenreplace.Replace(oInfo.FormValue & "", str)
+                            lblVal.ID = "ctl_" & oInfo.FormItemID
                             'lbl.CssClass = "dnnFormLabel"
-                            lbl.CssClass &= IIf(oInfo.CSSClass = String.Empty, "", " " & oInfo.CSSClass)
+                            lblVal.CssClass &= IIf(oInfo.CSSClass = String.Empty, "", " " & oInfo.CSSClass)
                             'td2.Controls.Add(lbl)
-                            div.Controls.Add(lbl)
+                            div.Controls.Add(lblVal)
                             If oInfo.FormItemTitle.Trim <> "" Then
-                                lbl.ToolTip = oInfo.FormItemTitle.Trim
+                                lblVal.ToolTip = oInfo.FormItemTitle.Trim
                             End If
 
                             'DropDownList
@@ -1002,15 +1006,21 @@ Namespace ODS.DNN.Modules.Form
                             Dim str As New MatchEvaluator(AddressOf DNNTokenReplace)
                             tb.Value = dnnsafetokenreplace.Replace(tb.Value, str)
                             szVal = tb.Value
+
+                        Case FormItem.Label
+                            Dim tb As Label = CType(FindControl("ctl_" & oInfo.FormItemID), Label)
+                            szVal = tb.Text
+
                     End Select
 
+
                     'Add label to formitem value
-                    If oInfo.FormType <> FormItem.Label Then
-                        sz = sz & "*** " & oInfo.FormLabel & " ***" & vbCrLf & szVal & vbCrLf & vbCrLf & vbCrLf
+                    ' If oInfo.FormType <> FormItem.Label Then
+                    sz = sz & "*** " & oInfo.FormLabel & " ***" & vbCrLf & szVal & vbCrLf & vbCrLf & vbCrLf
 
                         sHtmlMailBody &= "<b>" & oInfo.FormLabel & "</b>:<br/>" & szVal & "<br/><br/>"
 
-                    End If
+                    ' End If
 
                     Dim sXML As XmlDocument = oInfo.ToXML(cultureCode)
                     Dim ele As XmlElement = sXML.GetElementsByTagName("SubmissionValue")(0)

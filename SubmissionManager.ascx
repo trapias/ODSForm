@@ -21,9 +21,7 @@
         colonne.push(co2);
 
         //load data and build columns, cfr http://datatables.net/examples/data_sources/js_array.html
-        $.get('<%=ResolveURL("~/DesktopModules/Form/json.aspx?cmd=1&mid=" & me.ModuleID)%>&sEcho=1&iDisplayLength=10&sSearch=', function (data) {
-
-            //http://stage.jacobacci.it/DesktopModules/Form/json.aspx?cmd=1&mid=461&sEcho=1&iDisplayLength=10&sSearch=
+        $.get('<%=ResolveURL("~/DesktopModules/Form/json.aspx?cmd=1&mid=" & me.ModuleID)%>&portalid=<%=Me.PortalId%>&sEcho=1&iDisplayLength=10&sSearch=', function (data) {
 
             //console.log('DATA: ' + data);
             var j = JSON.parse(data);
@@ -45,12 +43,12 @@
                     //DNNRichTextEditControl = 8
                     //FileUpload = 9
                     //HiddenField = 10
-                    if ($(this).attr("FormType") != 6) {
+                   // if ($(this).attr("FormType") != 6) {
                         if (n === 0) {
                             var co = { 'title': $(this).attr("FormLabel") };
                             colonne.push(co);
                         }
-                    }
+                    //}
                 });
             }
             //for (i = 0; i < colonne.length; i++) {

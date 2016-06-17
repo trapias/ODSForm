@@ -40,7 +40,7 @@
      </div>
      <div class="dnnFormItem" id="trFormLabel" runat="server">
          <dnn:label id="plFormLabel" runat="server" controlname="tbFormLabel" suffix=":" resourcekey="plFormLabel" helptext=""></dnn:label>
-         <asp:TextBox Runat="server" ID="tbFormLabel" MaxLength="255" />
+         <asp:TextBox Runat="server" ID="tbFormLabel" MaxLength="512" />
      </div>
      <div class="dnnFormItem" id="trFieldTitle" runat="server">
          <dnn:label id="lblFormItemTitle" runat="server" controlname="txtFormItemTitle" suffix=":" resourcekey="plFormItemTitle" helptext=""></dnn:label>

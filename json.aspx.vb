@@ -11,6 +11,8 @@ Namespace ODS.DNN.Modules.Form
     Partial Class json
         Inherits DotNetNuke.Framework.CDefault
 
+        Private libName As String = "ODS.DNN.Modules.Form.JSON"
+
         'Public Sub MyLog(ByVal logMessage As String)
         '    DnnLog.Debug(logMessage)
         '    'Dim w As IO.StreamWriter = IO.File.AppendText(MapPath("~/DesktopModules/Form/json.log"))
@@ -45,9 +47,13 @@ Namespace ODS.DNN.Modules.Form
                             Dim iSortCol_0 As Integer = Request("iSortCol_0")
                             Dim sSortDir_0 As String = Request("sSortDir_0")
                             Dim MaxRecords As Integer = 0
+                            Dim pid As Integer = ps.PortalId
+                            If Request("PortalID") <> "" Then
+                                pid = Request("portalid")
+                            End If
 
                             Dim oSCont As New FormSubmissionController
-                            Dim ss As ArrayList = oSCont.SearchODSFormSubmission(ps.PortalId, mid, search, start, pageSize, iSortCol_0, sSortDir_0, MaxRecords)
+                            Dim ss As ArrayList = oSCont.SearchODSFormSubmission(pid, mid, search, start, pageSize, iSortCol_0, sSortDir_0, MaxRecords)
 
                             'prepara dati, cfr http://datatables.net/usage/server-side
                             'http://james.newtonking.com/projects/json-net.aspx
