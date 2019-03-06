@@ -231,4 +231,10 @@
   <data name="CustomDomains.Text" xml:space="preserve">
     <value>Custom domains</value>
   </data>
+  <data name="lblWHURL.Text" xml:space="preserve">
+    <value>WebHook URL</value>
+  </data>
+  <data name="PostToWebHook.Text" xml:space="preserve">
+    <value>Post to WebHook</value>
+  </data>
 </root>

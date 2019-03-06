@@ -1,5 +1,5 @@
 <dotnetnuke type="Package" version="5.0">
-  <packages><package name="Form" type="Module" version="1.0.12">
+  <packages><package name="Form" type="Module" version="1.0.13">
   <friendlyName>ODS Form</friendlyName>
   <description>ODS Form allows to publish simple forms to get feedback from users. Based on the original module created by Bjarte Djuvik Naess (www.nukenow.com, no more developed), now developed by Alberto Velo (http://trapias.github.io/dnn/odsform/).</description>
   <iconFile />
@@ -148,14 +148,6 @@ See the Trello board for details: https://trello.com/b/vZuoVDnV/ods-form
         </attributes>
       </eventMessage>
     </component>
-    <component type="Assembly">
-      <assemblies>
-        <basePath>bin</basePath>
-        <assembly>
-          <name>mscaptcha.dll</name>
-        </assembly>
-      </assemblies>
-    </component>
     <component type="File">
       <files>
         <basePath>App_Code\Form</basePath>
@@ -182,6 +174,9 @@ See the Trello board for details: https://trello.com/b/vZuoVDnV/ods-form
         </file>
         <file>
           <name>SqlDataProvider.vb</name>
+        </file>
+         <file>
+          <name>Webhook.vb</name>
         </file>
       </files>
     </component>

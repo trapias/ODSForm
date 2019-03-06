@@ -10,6 +10,20 @@ ODS Form is a DotNetNuke module that allows you to publish simple feedback forms
 
 [ODSForm Trello support board](https://trello.com/b/vZuoVDnV/ods-form)
 
+
+
+## Version: 01.00.13
+
+Added WebHooks: submissions can now be saved to database, sent by email and posted to a remote webhook.
+
+
+
+## Version 01.00.12
+
+ Allow DnnTokens in Labels, fix submission manager.
+
+
+
 ## Version: 01.00.11
 **Cascading SQL dropdowns**: it is now possible to link two dropdowns, that is to populate a second dropdown when the user selects a value in a first dropdown.
 

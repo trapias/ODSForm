@@ -26,6 +26,7 @@
 			<asp:CheckBox id="cbDatabase" runat="server" Text="Save in database" resourcekey="cbDatabase"></asp:CheckBox><br />
             <asp:CheckBox id="chkContactUsers" runat="server" Text="Allow to contact users" resourcekey="ContactUsers"></asp:CheckBox><br />
             <asp:CheckBox id="chkMailto" runat="server" Text="Allow dynamic mailto recipient" resourcekey="AllowMailto"></asp:CheckBox>
+            <asp:CheckBox id="chkWebHook" runat="server" Text="POST to WebHook" resourcekey="PostToWebHook"></asp:CheckBox><br />
 		</td>
 	</tr>
     <tr valign="top">
@@ -173,4 +174,23 @@
             </table>
         </td>
         </tr>
+
+
+    <tr>
+        <td colspan="2"><dnn:SectionHead ID="webhookSection" CssClass="Head" runat="server" Text="WebHook Settings" Section="setWebHook" IsExpanded="false"></dnn:SectionHead></td>
+    </tr>
+      <tr>
+        <td colspan="10">
+            <table id="setWebHook" runat="server" Width="100%">
+            <tr>
+		        <td class="SubHead" width="10%"><dnn:label id="lblWHURL" runat="server" controlname="txtWHURL" suffix=":" resourcekey="lblWHURL"
+				        helptext="Enter the URL to POST the submission to"></dnn:label></td>
+		        <td>
+			        <asp:TextBox Runat="server" ID="txtWHURL" Width="100%" />
+		        </td>
+	        </tr>
+            </table>
+        </td>
+        </tr>
+
 </table>

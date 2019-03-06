@@ -82,6 +82,10 @@ Namespace ODS.DNN.Modules.Form
                     'CustomDomains
                     txtCustomDomains.Text = CType(Settings("CustomDomains"), String)
 
+                    'WebHook
+                    chkWebHook.Checked = CType(Settings("enableWebHook"), Boolean)
+                    txtWHURL.Text = CType(Settings("WHURL-" & locale), String)
+
                 End If
             Catch exc As Exception
                 ProcessModuleLoadException(Me, exc)
@@ -167,6 +171,14 @@ Namespace ODS.DNN.Modules.Form
                 objModules.UpdateModuleSetting(ModuleId, "txtSubmitText-" & locale, txtSubmitText.Text)
                 'txtResetText
                 objModules.UpdateModuleSetting(ModuleId, "txtResetText-" & locale, txtResetText.Text)
+
+                'WebHook
+                objModules.UpdateModuleSetting(ModuleId, "enableWebHook", CStr(chkWebHook.Checked))
+                objModules.UpdateModuleSetting(ModuleId, "WHURL-" & locale, txtWHURL.Text)
+
+                chkWebHook.Checked = CType(Settings("enableWebHook"), Boolean)
+                txtWHURL.Text = CType(Settings("WHURL-" & locale), String)
+
 
                 ' Redirect back to the portal home page
                 Response.Redirect(NavigateURL(), True)

@@ -102,6 +102,10 @@
          <dnn:label id="lblFilePath" runat="server" controlname="txtFilePath" suffix=":" resourcekey="lblFilePath" helptext=""></dnn:label>
          <asp:DropDownList ID="ddlFilePath" runat="server" CssClass="Normal"></asp:DropDownList>
      </div>
+      <div class="dnnFormItem" id="trWebhookFieldName" runat="server">
+         <dnn:label id="lblWebhookFieldName" runat="server" controlname="txtWebhookFieldName" suffix=":" resourcekey="plWebhookFieldName" helptext=""></dnn:label>
+         <asp:TextBox Runat="server" ID="txtWebhookFieldName" />
+     </div>
 </fieldset>
 </div>
 <ul class="dnnActions dnnClear">

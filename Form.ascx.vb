@@ -11,6 +11,7 @@ Imports System.Xml
 Imports DotNetNuke.Instrumentation
 Imports System.Text.RegularExpressions
 Imports DotNetNuke.Framework.JavaScriptLibraries
+Imports System.Net
 
 Namespace ODS.DNN.Modules.Form
 
@@ -31,11 +32,11 @@ Namespace ODS.DNN.Modules.Form
 
         Protected Sub Page_Init(sender As Object, e As System.EventArgs) Handles Me.Init
 
-            If Not Page.IsPostBack Then
-                JavaScript.RequestRegistration(CommonJs.jQuery)
+            'If Not Page.IsPostBack Then
+            JavaScript.RequestRegistration(CommonJs.jQuery)
                 JavaScript.RequestRegistration(CommonJs.jQueryUI)
                 JavaScript.RequestRegistration(CommonJs.DnnPlugins)
-            End If
+            'End If
             
                 LocalizeForm = CType(Settings("EnableLocalization"), Boolean)
                 If LocalizeForm Then cultureCode = System.Threading.Thread.CurrentThread.CurrentCulture.ToString
@@ -452,8 +453,28 @@ Namespace ODS.DNN.Modules.Form
                                 End If
 
                             Else
-                                ddl.DataSource = Split(oInfo.FormValue & "", ";")
+                                Dim list As List(Of KeyValuePair(Of String, String)) = New List(Of KeyValuePair(Of String, String))
+                                Dim oD As Object
+                                Dim s1() As String = Split(oInfo.FormValue & "", ";")
+                                oD = s1
+                                For Each s As String In s1
+                                    If s.Contains("=") Then
+                                        Dim s2() As String = s.Split("=")
+                                        oD = New KeyValuePair(Of String, String)(s2(0), s2(1))
+                                    Else
+                                        oD = New KeyValuePair(Of String, String)(s, s)
+                                    End If
+                                    list.Add(oD)
+                                Next
+
+                                For Each ob As KeyValuePair(Of String, String) In list
+                                    ddl.Items.Add(New ListItem(ob.Value, ob.Key))
+                                Next
+
+                                ' ddl.DataSource = Split(oInfo.FormValue & "", ";")
+
                                 ddl.DataBind()
+
                             End If
                             ddl.ID = "ctl_" & oInfo.FormItemID
                             ddl.CssClass = IIf(oInfo.CSSClass = String.Empty, "FormDropDownList", oInfo.CSSClass)
@@ -848,7 +869,7 @@ Namespace ODS.DNN.Modules.Form
                 End If
 
                 Dim u As UserInfo = Nothing
-
+                Dim postdata As String = String.Empty
                 Dim oInfo As FormItemInfo
                 Dim AllowContactUsers As Boolean = CType(Settings("AllowContactUsers"), Boolean)
                 If AllowContactUsers AndAlso Request("userid") <> "" Then
@@ -861,6 +882,7 @@ Namespace ODS.DNN.Modules.Form
 
                 Dim sz As String = String.Empty
                 Dim szVal As String = String.Empty
+                Dim szValWebHook As String = String.Empty
                 Dim sHtmlMailBody As String = String.Empty
                 Dim bValid As Boolean = Page.IsValid ' True 'is all required fields filled
                 Dim d As New XmlDocument()
@@ -872,6 +894,7 @@ Namespace ODS.DNN.Modules.Form
                 For Each o As Object In al
                     oInfo = CType(o, FormItemInfo)
                     szVal = ""
+                    szValWebHook = szVal
 
                     'Create the control and extract submitted value
                     Select Case oInfo.FormType
@@ -892,10 +915,12 @@ Namespace ODS.DNN.Modules.Form
                                     bValid = False
                                 End If
                             End If
+                            szValWebHook = szVal
 
                         Case FormItem.DropDownList
                             Dim ddl As DropDownList = CType(FindControl("ctl_" & oInfo.FormItemID), DropDownList)
                             szVal = ddl.SelectedItem.Text
+                            szValWebHook = ddl.SelectedItem.Value
 
                             If Not oInfo.Optional Then
                                 If Len(Trim(ddl.SelectedValue)) = 0 Then
@@ -915,6 +940,7 @@ Namespace ODS.DNN.Modules.Form
                                     bValid = False
                                 End If
                             End If
+                            szValWebHook = szVal
 
                         Case FormItem.MultipleSelect
                             Dim rbl As CheckBoxList = CType(FindControl("ctl_" & oInfo.FormItemID), CheckBoxList)
@@ -926,9 +952,11 @@ Namespace ODS.DNN.Modules.Form
                                 For Each i As ListItem In rbl.Items
                                     If i.Selected = True Then
                                         szVal &= i.Text & ","
+                                        szValWebHook &= i.Value & ","
                                     End If
                                 Next
                                 If szVal.EndsWith(",") Then szVal = szVal.Substring(0, szVal.Length - 1)
+                                If szValWebHook.EndsWith(",") Then szValWebHook = szValWebHook.Substring(0, szValWebHook.Length - 1)
                             End If
 
                             If Not oInfo.Optional Then
@@ -947,6 +975,7 @@ Namespace ODS.DNN.Modules.Form
                                 '    szVal = oInfo.FormValue
                                 'End If
                             End If
+                            szValWebHook = szVal
 
                         Case FormItem.DNNRichTextEditControl
                             Dim ed As DotNetNuke.UI.WebControls.DNNRichTextEditControl = CType(FindControl("ctl_" & oInfo.FormItemID), DotNetNuke.UI.WebControls.DNNRichTextEditControl)
@@ -961,6 +990,7 @@ Namespace ODS.DNN.Modules.Form
                                     bValid = False
                                 End If
                             End If
+                            szValWebHook = szVal
 
                         Case FormItem.FileUpload
                             Dim ed As FileUpload = CType(FindControl("ctl_" & oInfo.FormItemID), FileUpload)
@@ -976,17 +1006,21 @@ Namespace ODS.DNN.Modules.Form
                                     szVal = "ERROR, cannot find folder " & oInfo.FormValue
                                 Else
                                     Try
-                                        'MyLog("save to " & myFolder.PhysicalPath & szVal)
+                                        MyLog("save to " & myFolder.PhysicalPath & szVal)
+                                        'append suffix + extension
+                                        Dim p As Integer = szVal.LastIndexOf(".")
+                                        szVal = szVal.Substring(0, p) & "." & Now.Ticks.ToString & "." & szVal.Substring(p + 1)
+                                        MyLog("save as " & myFolder.PhysicalPath & szVal)
                                         ed.SaveAs(myFolder.PhysicalPath & szVal)
                                     Catch ex As Exception
-                                        'MyLog("Cannot save attach: " & ex.Message)
-                                        szVal = "ERROR, cannot save file " & oInfo.FormValue & " " & ex.Message
+                                        MyLog("ERROR, cannot save file " & oInfo.FormValue & ": " & ex.Message)
+                                        szVal = "" ' "ERROR, cannot save file " & oInfo.FormValue & " " & ex.Message
                                     End Try
 
                                     Try
                                         'give full URL to file to allow download
                                         Dim uri As New Uri(HttpContext.Current.Request.Url.AbsoluteUri)
-                                        szVal = "<a href='" & uri.Scheme + uri.SchemeDelimiter + uri.Host & Me.PortalSettings.HomeDirectory & myFolder.FolderPath & szVal & "'>" & ed.FileName & "</a>"
+                                        szVal = "<a href='" & uri.Scheme + Uri.SchemeDelimiter + uri.Host & Me.PortalSettings.HomeDirectory & myFolder.FolderPath & szVal & "'>" & ed.FileName & "</a>"
                                     Catch ex As Exception
                                         szVal = "ERROR, cannot parse file " & oInfo.FormValue & " " & ex.Message
                                     End Try
@@ -994,6 +1028,7 @@ Namespace ODS.DNN.Modules.Form
 
 
                             End If
+                            szValWebHook = szVal
 
                         Case FormItem.HiddenField
                             Dim tb As HiddenField = CType(FindControl("ctl_" & oInfo.FormItemID), HiddenField)
@@ -1006,13 +1041,16 @@ Namespace ODS.DNN.Modules.Form
                             Dim str As New MatchEvaluator(AddressOf DNNTokenReplace)
                             tb.Value = dnnsafetokenreplace.Replace(tb.Value, str)
                             szVal = tb.Value
-
-                        Case FormItem.Label
-                            Dim tb As Label = CType(FindControl("ctl_" & oInfo.FormItemID), Label)
-                            szVal = tb.Text
+                            szValWebHook = szVal
 
                     End Select
 
+                    If CBool(Settings("enableWebHook")) AndAlso Not String.IsNullOrEmpty(oInfo.WebhookFieldName) Then
+                        If postdata <> String.Empty Then
+                            postdata &= "&"
+                        End If
+                        postdata &= IIf(String.IsNullOrEmpty(oInfo.WebhookFieldName), oInfo.FormItemID, oInfo.WebhookFieldName.Trim()) & "=" & HttpUtility.UrlEncode(szValWebHook)
+                    End If
 
                     'Add label to formitem value
                     ' If oInfo.FormType <> FormItem.Label Then
@@ -1093,6 +1131,27 @@ Namespace ODS.DNN.Modules.Form
                     Dim oSController As New FormSubmissionController
                     oSController.AddODSFormSubmission(oSInfo)
                 End If
+
+                ' POST to WebHook
+                Try
+                    LoggerSource.Instance.GetLogger(libName).Info("enableWebHook: " & Settings("enableWebHook"))
+                    If CBool(Settings("enableWebHook")) Then
+                        Dim whURL As String = CType(Settings("WHURL-" & cultureCode), String)
+                        If String.IsNullOrEmpty(whURL) Then
+                            LoggerSource.Instance.GetLogger(libName).Error("Cannot POST to WebHook, please configure URL")
+                        Else
+                            Dim h As New Webhook
+                            LoggerSource.Instance.GetLogger(libName).Info("Posting submission to " & whURL)
+                            LoggerSource.Instance.GetLogger(libName).Debug("DATA: " & postdata)
+                            Dim pr As String = h.Post(whURL, postdata)
+                            LoggerSource.Instance.GetLogger(libName).Info("POST RESULT: " & pr)
+                        End If
+
+                    End If
+                Catch er As Exception
+                    LoggerSource.Instance.GetLogger(libName).Error("Cannot post to Webhook: " & er.Message)
+                    LoggerSource.Instance.GetLogger(libName).Error(er.StackTrace)
+                End Try
 
                 'contact user mode
                 If Not u Is Nothing Then

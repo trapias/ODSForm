@@ -24,6 +24,8 @@ Namespace ODS.DNN.Modules.Form.Business
         Dim _culture As String
         Dim _AllowValueOverride As Boolean
         Dim _custom As String
+        Dim _WebhookFieldName As String
+
 #End Region
 
 #Region "Constructors"
@@ -218,6 +220,16 @@ Namespace ODS.DNN.Modules.Form.Business
                 _custom = Value
             End Set
         End Property
+
+        Public Property WebhookFieldName() As String
+            Get
+                Return _WebhookFieldName
+            End Get
+            Set(ByVal Value As String)
+                _WebhookFieldName = Value
+            End Set
+        End Property
+
 #End Region
 
 #Region "Methods"
@@ -317,6 +329,11 @@ Namespace ODS.DNN.Modules.Form.Business
             Dim bAllowValueOverride As XmlAttribute = d.CreateAttribute("AllowValueOverride")
             bAllowValueOverride.Value = Me.AllowValueOverride
             root.Attributes.Append(bAllowValueOverride)
+
+            'WebhookFieldName
+            Dim WebhookFieldName As XmlAttribute = d.CreateAttribute("WebhookFieldName")
+            WebhookFieldName.Value = Me.WebhookFieldName
+            root.Attributes.Append(WebhookFieldName)
 
             'valore submission
             Dim valore As XmlElement = d.CreateElement("SubmissionValue")

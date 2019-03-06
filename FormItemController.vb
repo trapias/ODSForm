@@ -29,13 +29,13 @@ Namespace ODS.DNN.Modules.Form.Business
 
         Public Function Add(ByVal objODSFormItem As FormItemInfo) As Integer
 
-            Return CType(DataProvider.Instance().AddODSFormItem(objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.SortValue, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride, objODSFormItem.CustomData), Integer)
+            Return CType(DataProvider.Instance().AddODSFormItem(objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.SortValue, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride, objODSFormItem.CustomData, objODSFormItem.WebhookFieldName), Integer)
 
         End Function
 
         Public Sub Update(ByVal objODSFormItem As FormItemInfo)
 
-            DataProvider.Instance().UpdateODSFormItem(objODSFormItem.FormItemID, objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride, objODSFormItem.CustomData)
+            DataProvider.Instance().UpdateODSFormItem(objODSFormItem.FormItemID, objODSFormItem.ModuleID, objODSFormItem.PortalID, objODSFormItem.FormType, objODSFormItem.FormValue, objODSFormItem.FormSelectedValue, objODSFormItem.FormLabel, objODSFormItem.Optional, objODSFormItem.Width, objODSFormItem.Height, objODSFormItem.CSSClass, objODSFormItem.CustomRegex, objODSFormItem.FormItemTitle, objODSFormItem.FormLabelClass, objODSFormItem.Culture, objODSFormItem.AllowValueOverride, objODSFormItem.CustomData, objODSFormItem.WebhookFieldName)
 
         End Sub
 
@@ -111,6 +111,8 @@ Namespace ODS.DNN.Modules.Form.Business
                     Writer.WriteElementString("FormSelectedValue", o.FormSelectedValue)
                     Writer.WriteElementString("CustomRegex", o.CustomRegex)
                     Writer.WriteElementString("CustomData", o.CustomData)
+                    'WebhookFieldName
+                    Writer.WriteElementString("WebhookFieldName", o.WebhookFieldName)
 
                     Writer.WriteEndElement()
                 Next
@@ -150,6 +152,8 @@ Namespace ODS.DNN.Modules.Form.Business
                 f.FormSelectedValue = n.Item("FormSelectedValue").InnerText
                 f.CustomRegex = n.Item("CustomRegex").InnerText
                 f.CustomData = n.Item("CustomData").InnerText
+                'WebhookFieldName
+                f.WebhookFieldName = n.Item("WebhookFieldName").InnerText
 
                 DnnLogger.GetLogger("ODSForm").Debug("ADD item w FormLabel=" & f.FormLabel)
                 Add(f)
